@@ -11,17 +11,29 @@ export default function Home() {
   useEffect(() => {
     const testConnection = async () => {
       try {
-        const { data, error: supabaseError } = await supabase
-          .from('groups')
-          .select('*')
-          .limit(1)
+        // Test basic Supabase connectivity without triggering RLS policies
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-        if (supabaseError) {
-          setError(`Supabase connection error: ${supabaseError.message}`)
-          console.error('Supabase connection error:', supabaseError.message)
+        if (!supabaseUrl || !supabaseAnonKey) {
+          setError('Supabase environment variables are not configured')
+          setLoading(false)
+          return
+        }
+
+        // Perform a simple fetch to verify connection
+        const response = await fetch(`${supabaseUrl}/rest/v1/`, {
+          headers: {
+            'Authorization': `Bearer ${supabaseAnonKey}`,
+            'apikey': supabaseAnonKey,
+          },
+        })
+
+        if (response.ok) {
+          setGroups([{ message: 'Connected to Supabase' }])
+          console.log('✓ Supabase connected successfully')
         } else {
-          setGroups(data)
-          console.log('Supabase connected, sample group:', data)
+          setError(`Connection failed with status: ${response.status}`)
         }
       } catch (err) {
         setError(`Connection failed: ${err.message}`)
