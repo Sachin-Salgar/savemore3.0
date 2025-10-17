@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+  background-color: #ffffff;
+  color: #111827;
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-blue-700 transition-colors min-h-[44px] flex items-center justify-center;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 bg-secondary text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors min-h-[44px] flex items-center justify-center;
+  }
+
+  .btn-outline {
+    @apply px-4 py-2 border-2 border-primary text-primary rounded-lg font-medium hover:bg-blue-50 transition-colors min-h-[44px] flex items-center justify-center;
+  }
+
+  .card {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-4;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary min-h-[44px];
+  }
+
+  .stat-card {
+    @apply bg-light rounded-lg p-4 border border-gray-200;
+  }
+}

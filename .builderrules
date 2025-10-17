@@ -1,0 +1,427 @@
+# Product Requirements Document (PRD)
+
+## 1\. Overview
+
+**App Name:** SaveMore
+
+SaveMore is a Progressive Web App (PWA) designed to digitize and streamline Self Help Group (SHG) management across multiple communities. The app empowers group members to manage their monthly savings deposits, track loan disbursements, and monitor repayment schedules through an intuitive mobile-first interface. Group presidents can efficiently manage their members' financial records, while an administrative layer provides oversight and approval capabilities for new group registrations.
+
+**Target Audience:** Self Help Group members, group presidents, and SHG coordinators across rural and urban communities seeking digital financial management solutions.
+
+**Problem Solved:** Traditional SHG management relies on manual record-keeping, leading to transparency issues, calculation errors, and difficulty tracking multiple groups. SaveMore provides a centralized, transparent, and user-friendly platform that ensures accurate financial tracking, improves member trust, and enables efficient multi-group administration.
+
+## 2\. Essential Core Features
+
+### Member Features
+
+* **Savings Tracking**: View personal monthly deposits and cumulative savings balance
+* **Loan Management**: Apply for loans, view approval status, and track repayment schedules
+* **Transaction History**: Complete record of all deposits, withdrawals, and interest calculations
+* **Group Dashboard**: Overview statistics including group balance, active loans, and payment due dates
+* **Payment Reminders**: Notifications for upcoming EMI payments and deposit due dates
+
+### President Features
+
+* **Member Management**: Add, remove, and manage member profiles and permissions
+* **Financial Operations**: Record deposits, approve/reject loan applications, manage loan disbursements
+* **Interest Calculations**: Automated interest computation and EMI scheduling
+* **Bank Account Integration**: Track group bank account balance and transactions
+* **Reports Generation**: Monthly statements, loan summaries, and member contribution reports
+* **Meeting Management**: Schedule meetings, record minutes, and track attendance
+
+### Administrative Features
+
+* **Multi-Group Oversight**: Monitor all registered groups across the platform
+* **Registration Approval**: Approve/reject new group and president registrations
+* **System Analytics**: Platform-wide statistics, growth metrics, and usage patterns
+* **User Role Management**: Assign and modify user permissions across different groups
+* **Data Export**: Generate comprehensive reports for external stakeholders
+
+### Core System Features
+
+* **Multi-Tenant Architecture**: Secure data isolation between different SHG groups
+* **Role-Based Access Control**: Granular permissions for admins, presidents, and members
+* **Real-Time Updates**: Live synchronization of financial data across all users
+* **Offline Support**: Basic functionality available without internet connectivity
+* **Data Backup**: Automated backups with recovery capabilities
+
+## 3\. Tech Stack
+
+### Front-End
+
+* **Framework**: React with TypeScript
+* **Styling**: Tailwind CSS for responsive design
+* **Build Tool**: Vite for fast development and optimized builds
+* **PWA Features**: Service workers, offline caching, push notifications
+
+### Back-End
+
+* **Database**: Neon PostgreSQL for scalable data storage
+* **Authentication**: Supabase Auth for secure user management
+* **Real-time**: Supabase Realtime for live data synchronization
+* **Storage**: Supabase Storage for document uploads and profile images
+* **API**: RESTful APIs with Row Level Security (RLS)
+
+### APIs & Integrations
+
+* **Payment Gateways**: Integration ready for UPI/digital payment systems
+* **SMS Services**: For payment reminders and notifications
+* **Email Services**: Automated reports and communication
+* **Bank APIs**: Future integration with banking services for account verification
+
+### Technical Requirements
+
+* **PWA Compliance**: Installable, responsive, and works offline
+* **Security**: End-to-end encryption for sensitive financial data
+* **Performance**: Optimized for 2G/3G networks common in rural areas
+* **Scalability**: Support for thousands of concurrent users and groups
+
+## 4\. Design Preferences
+
+### Interface
+
+The design follows a clean, mobile-first approach with large touch targets and clear typography optimized for users with varying digital literacy levels. The interface prioritizes simplicity and accessibility while maintaining professional credibility for financial operations.
+
+### Color Palette
+
+* **Primary**: Deep Blue (#1E40AF) - Trust and stability
+* **Secondary**: Emerald Green (#059669) - Growth and prosperity
+* **Accent**: Amber Orange (#F59E0B) - Attention and warmth
+* **Background**: Light Gray (#F9FAFB) and White (#FFFFFF)
+* **Text**: Dark Gray (#111827) and Medium Gray (#6B7280)
+
+### Typography
+
+* **Headings**: Inter (sans-serif) - Modern and highly legible
+* **Body Text**: Inter (sans-serif) - Consistent visual hierarchy
+* **Numbers**: Tabular figures for proper alignment in financial displays
+
+### Design Considerations
+
+* High contrast ratios for accessibility
+* Consistent spacing using Tailwind's spacing scale
+* Touch-friendly button sizes (minimum 44px)
+* Clear visual feedback for all interactive elements
+
+## 5\. All Screens/Pages
+
+### Authentication Screens
+
+#### `/login`
+
+* **UI Elements**: Logo, email/phone input, password input, login button, "Forgot Password" link, "Register" link
+* **Navigation**: Entry point from app launch, redirects to dashboard on success, links to `/register` and `/forgot-password`
+* **Conditional Elements**: Loading spinner during authentication, error messages for invalid credentials
+
+#### `/register`
+
+* **UI Elements**: Logo, user type selector (Member/President), name input, email/phone input, password input, confirm password input, group code input (for members), register button, "Login" link
+* **Navigation**: Accessible from login screen, redirects to pending approval screen on success
+* **Conditional Elements**: Group selection dropdown for presidents, terms and conditions checkbox
+
+#### `/forgot-password`
+
+* **UI Elements**: Logo, email input, reset button, back to login link
+* **Navigation**: Accessible from login screen, shows confirmation message on success
+* **Conditional Elements**: Success message, error handling for invalid email
+
+### Dashboard Screens
+
+#### `/dashboard` (Member Dashboard)
+
+* **UI Elements**: Welcome header with user name, stat cards (savings balance, active loans, next payment), quick action buttons (view transactions, apply for loan, make payment), recent transactions list, notifications panel
+* **Navigation**: Main landing page after login, navigation to all major sections
+* **Conditional Elements**: Loan application status, overdue payment alerts, empty state messages
+
+#### `/president-dashboard` (President Dashboard)
+
+* **UI Elements**: Group overview stats, member summary cards, pending approvals section, quick actions (add member, record payment, generate report), bank account balance, recent group activities
+* **Navigation**: Main landing page for presidents, access to all management functions
+* **Conditional Elements**: Approval badges, low balance warnings, meeting reminders
+
+#### `/admin-dashboard` (Admin Dashboard)
+
+* **UI Elements**: Platform statistics, group registration requests, president approval queue, system health indicators, user activity metrics, quick actions for approvals
+* **Navigation**: Admin-only landing page, access to all administrative functions
+* **Conditional Elements**: Pending approval counts, system alerts, growth charts
+
+### Member Screens
+
+#### `/profile`
+
+* **UI Elements**: Profile photo upload, personal details form, contact information, group membership details, edit button, save button
+* **Navigation**: Accessible from main menu, back to dashboard
+* **Conditional Elements**: Edit mode toggle, unsaved changes warning
+
+#### `/savings`
+
+* **UI Elements**: Total savings display, monthly contribution history, contribution calendar, deposit schedule, add manual deposit button
+* **Navigation**: From dashboard or main menu, links to individual deposit details
+* **Conditional Elements**: Missing payment indicators, bonus contributions highlight
+
+#### `/loans`
+
+* **UI Elements**: Active loans list, loan application button, repayment schedule, loan history, EMI calculator
+* **Navigation**: From dashboard or main menu, links to loan details and application form
+* **Conditional Elements**: Loan eligibility status, overdue payment alerts, application status
+
+#### `/loan-application`
+
+* **UI Elements**: Loan amount input, purpose selection, repayment period selector, interest rate display, eligibility checker, submit button
+* **Navigation**: From loans screen, redirects to loans screen on submission
+* **Conditional Elements**: Eligibility warnings, interest calculation preview
+
+#### `/transactions`
+
+* **UI Elements**: Transaction list with filters, search bar, date range selector, transaction categories, export button
+* **Navigation**: From dashboard or main menu, links to individual transaction details
+* **Conditional Elements**: Filter badges, empty state for no transactions
+
+### President Screens
+
+#### `/members`
+
+* **UI Elements**: Members list with photos and stats, add member button, search and filter options, member status indicators
+* **Navigation**: From president dashboard, links to individual member profiles
+* **Conditional Elements**: Pending approval badges, inactive member indicators
+
+#### `/member-profile/:id`
+
+* **UI Elements**: Member details, savings history, loan records, payment status, action buttons (approve loan, record payment), notes section
+* **Navigation**: From members list, back to members screen
+* **Conditional Elements**: Approval buttons, payment overdue alerts
+
+#### `/financial-management`
+
+* **UI Elements**: Group bank balance, deposit recording form, withdrawal management, interest calculation tools, transaction reconciliation
+* **Navigation**: From president dashboard, navigation between different financial operations
+* **Conditional Elements**: Balance warnings, reconciliation status
+
+#### `/loan-approvals`
+
+* **UI Elements**: Pending loan applications, application details, approval/rejection buttons, eligibility criteria, member evaluation data
+* **Navigation**: From president dashboard, links to individual application details
+* **Conditional Elements**: Approval recommendations, member credit history
+
+#### `/reports`
+
+* **UI Elements**: Report type selector, date range picker, generate report button, saved reports list, export options
+* **Navigation**: From president dashboard, download and share options
+* **Conditional Elements**: Report generation progress, empty state for no data
+
+### Administrative Screens
+
+#### `/admin/groups`
+
+* **UI Elements**: Groups list, registration status, group statistics, approval/rejection buttons, group details modal
+* **Navigation**: From admin dashboard, links to detailed group information
+* **Conditional Elements**: Approval status badges, performance metrics
+
+#### `/admin/users`
+
+* **UI Elements**: Users list with roles, search and filter options, user status management, bulk action buttons
+* **Navigation**: From admin dashboard, links to user profile management
+* **Conditional Elements**: Role badges, status indicators
+
+#### `/admin/approvals`
+
+* **UI Elements**: Pending approvals queue, approval workflow, bulk approval options, rejection reason forms
+* **Navigation**: From admin dashboard, processing workflow
+* **Conditional Elements**: Priority indicators, approval history
+
+#### `/admin/analytics`
+
+* **UI Elements**: Usage statistics charts, growth metrics, performance indicators, data export tools, trend analysis
+* **Navigation**: From admin dashboard, drill-down into specific metrics
+* **Conditional Elements**: Time period selectors, comparison views
+
+### Common Screens
+
+#### `/settings`
+
+* **UI Elements**: Account settings, notification preferences, security options, language selection, theme toggle
+* **Navigation**: From main menu, applies changes globally
+* **Conditional Elements**: Role-specific settings, confirmation dialogs
+
+#### `/notifications`
+
+* **UI Elements**: Notifications list, read/unread indicators, action buttons, filter options, mark all as read
+* **Navigation**: From main menu or notification icon, links to related screens
+* **Conditional Elements**: Empty state, notification categories
+
+#### `/help`
+
+* **UI Elements**: FAQ sections, contact support form, user guides, video tutorials, troubleshooting guides
+* **Navigation**: From main menu, search functionality, category navigation
+* **Conditional Elements**: Role-specific help content, search results
+
+## 6\. App Menu and Navigation Structure
+
+### Navigation System
+
+**Bottom Tab Navigation** (Primary) - Fixed bottom bar for core functions:
+
+* Home (Dashboard)
+* Savings/Loans (role-dependent)
+* Transactions/Members (role-dependent)
+* Profile/Management (role-dependent)
+
+**Hamburger Menu** (Secondary) - Slide-out menu for additional functions:
+
+* Settings
+* Notifications
+* Help & Support
+* Reports (President/Admin only)
+* Logout
+
+### Navigation Hierarchy
+
+#### Member Navigation
+
+```
+鈹溾攢鈹€ Dashboard (Home Tab)
+鈹溾攢鈹€ Savings (Savings Tab)
+鈹溾攢鈹€ Loans (Loans Tab)
+鈹溾攢鈹€ Profile (Profile Tab)
+鈹斺攢鈹€ Hamburger Menu
+    鈹溾攢鈹€ Transactions
+    鈹溾攢鈹€ Notifications
+    鈹溾攢鈹€ Settings
+    鈹溾攢鈹€ Help
+    鈹斺攢鈹€ Logout
+```
+
+#### President Navigation
+
+```
+鈹溾攢鈹€ Dashboard (Home Tab)
+鈹溾攢鈹€ Members (Members Tab)
+鈹溾攢鈹€ Loans (Loans Tab)
+鈹溾攢鈹€ Management (Management Tab)
+鈹斺攢鈹€ Hamburger Menu
+    鈹溾攢鈹€ Financial Management
+    鈹溾攢鈹€ Reports
+    鈹溾攢鈹€ Notifications
+    鈹溾攢鈹€ Settings
+    鈹溾攢鈹€ Help
+    鈹斺攢鈹€ Logout
+```
+
+#### Admin Navigation
+
+```
+鈹溾攢鈹€ Dashboard (Home Tab)
+鈹溾攢鈹€ Groups (Groups Tab)
+鈹溾攢鈹€ Users (Users Tab)
+鈹溾攢鈹€ Analytics (Analytics Tab)
+鈹斺攢鈹€ Hamburger Menu
+    鈹溾攢鈹€ Approvals
+    鈹溾攢鈹€ System Settings
+    鈹溾攢鈹€ Notifications
+    鈹溾攢鈹€ Help
+    鈹斺攢鈹€ Logout
+```
+
+### Navigation Behavior
+
+* **Active State**: Current tab highlighted with accent color
+* **Badge Notifications**: Red badges show pending items (approvals, notifications)
+* **Back Navigation**: Hardware back button supported, breadcrumb navigation for deep screens
+* **Deep Linking**: Direct links to specific screens with proper authentication checks
+
+## 7\. User Flow
+
+### Member User Flow
+
+**Initial Registration and Setup**
+
+1. User downloads/accesses SaveMore PWA
+2. Taps "Register" on login screen
+3. Selects "Member" as user type
+4. Fills personal information (name, email/phone, password)
+5. Enters group code provided by president
+6. Submits registration and waits for president approval
+7. Receives notification when approved
+8. Logs in and completes profile setup
+
+**Daily Usage Flow**
+
+1. Opens app and views dashboard with savings balance and loan status
+2. Checks recent transactions and upcoming payment reminders
+3. Makes monthly deposit entry or views payment history
+4. Reviews loan repayment schedule if applicable
+5. Updates profile information as needed
+
+**Loan Application Flow**
+
+1. Navigates to Loans section from dashboard
+2. Taps "Apply for Loan" button
+3. Enters loan amount and selects purpose
+4. Reviews interest rate and repayment terms
+5. Checks eligibility requirements
+6. Submits application
+7. Receives confirmation and tracks approval status
+8. Gets notification when approved/rejected
+9. Views disbursement details if approved
+
+### President User Flow
+
+**Group Setup and Management**
+
+1. Registers as president with group details
+2. Waits for admin approval
+3. Receives approval notification and logs in
+4. Sets up group bank account information
+5. Configures group rules (interest rates, deposit amounts)
+6. Starts inviting members with group codes
+
+**Member Management Flow**
+
+1. Reviews member registration requests
+2. Verifies member information and documentation
+3. Approves/rejects member applications
+4. Adds member to group roster
+5. Monitors member savings and loan activities
+6. Records monthly deposits and payments
+7. Manages defaulters and overdue payments
+
+**Financial Operations Flow**
+
+1. Records all member deposits in the system
+2. Updates group bank account balance
+3. Reviews and processes loan applications
+4. Calculates interest and EMI amounts
+5. Disburses approved loans
+6. Tracks repayments and updates balances
+7. Generates monthly statements and reports
+8. Reconciles digital records with bank statements
+
+### Admin User Flow
+
+**Platform Administration**
+
+1. Logs into admin dashboard
+2. Reviews platform statistics and health metrics
+3. Monitors new group registration requests
+4. Verifies president credentials and documentation
+5. Approves/rejects group registrations
+6. Manages user roles and permissions
+7. Handles escalated issues and disputes
+8. Generates platform-wide analytics reports
+
+**Quality Assurance Flow**
+
+1. Periodically audits group activities
+2. Reviews financial transactions for compliance
+3. Monitors user feedback and support requests
+4. Implements system updates and improvements
+5. Ensures data security and backup procedures
+6. Manages platform growth and scalability needs
+
+### Error Handling and Edge Cases
+
+* **Network Issues**: App works offline with local data sync when reconnected
+* **Payment Failures**: Clear error messages with retry options and support contact
+* **Approval Delays**: Automated reminders and escalation procedures
+* **Data Conflicts**: Real-time sync with conflict resolution workflows
+* **Security Breaches**: Immediate logout and password reset requirements
