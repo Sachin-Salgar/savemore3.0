@@ -124,10 +124,8 @@ export default function AdminDashboard() {
 
       if (error) throw error
 
-      // Remove from pending requests
       setPendingRequests(prev => prev.filter(r => r.id !== groupId))
       
-      // Update stats
       setStats(prev => ({
         ...prev,
         pendingGroups: Math.max(0, prev.pendingGroups - 1),
@@ -249,7 +247,7 @@ export default function AdminDashboard() {
                 <p className="font-medium text-gray-900">API Status</p>
                 <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">Healthy</span>
               </div>
-              <p className="text-sm text-gray-600">Response time: < 100ms</p>
+              <p className="text-sm text-gray-600">Response time: under 100ms</p>
             </div>
           </div>
         </section>
