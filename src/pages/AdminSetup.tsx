@@ -122,17 +122,33 @@ export default function AdminSetup() {
             )}
 
             {message && (
-              <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
+              <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm whitespace-pre-line">
                 {message}
               </div>
             )}
 
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Supabase Service Role Key
+              </label>
+              <textarea
+                value={serviceRoleKey}
+                onChange={(e) => setServiceRoleKey(e.target.value)}
+                placeholder="Paste your service role key here..."
+                className="input-field font-mono text-xs h-24"
+                disabled={loading}
+              />
+              <p className="text-xs text-gray-500 mt-2">
+                Get this from Supabase Dashboard → Settings → API → Service Role Key
+              </p>
+            </div>
+
             <button
               onClick={createAdminUser}
-              disabled={loading}
+              disabled={loading || !serviceRoleKey.trim()}
               className="btn-primary w-full"
             >
-              {loading ? 'Creating...' : 'Create Admin User'}
+              {loading ? 'Setting up...' : 'Setup Admin Account'}
             </button>
 
             <a
