@@ -1,34 +1,50 @@
 import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/hooks/useAuth'
+import { useSavings } from '@/hooks/useSavings'
+import { useLoans } from '@/hooks/useLoans'
+import { useGroup } from '@/hooks/useGroup'
 import Layout from '@/components/Layout'
+import { formatCurrency } from '@/utils/calculations'
+import { supabase } from '@/lib/supabase'
 
 export default function Dashboard() {
-  const [user, setUser] = useState<any>(null)
-  const [stats, setStats] = useState({
-    savingsBalance: 0,
-    activeLoans: 0,
-    nextPayment: null
-  })
-  const [loading, setLoading] = useState(true)
+  const { user } = useAuth()
+  const [groupId, setGroupId] = useState<string | null>(null)
+  const [nextPaymentDue, setNextPaymentDue] = useState<string | null>(null)
+  const { totalSavings } = useSavings()
+  const { activeLoans } = useLoans()
+  const { group } = useGroup(groupId || undefined)
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchUserGroup = async () => {
       try {
-        const { data: { user: authUser } } = await supabase.auth.getUser()
-        setUser(authUser)
+        const { data } = await supabase
+          .from('group_members')
+          .select('group_id')
+          .eq('user_id', user?.id)
+          .eq('status', 'approved')
+          .single()
+
+        if (data) {
+          setGroupId(data.group_id)
+          // Calculate next payment due
+          const today = new Date()
+          const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1)
+          setNextPaymentDue(nextMonth.toLocaleDateString('en-IN', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
+          }))
+        }
       } catch (error) {
-        console.error('Failed to fetch user:', error)
-      } finally {
-        setLoading(false)
+        console.error('Failed to fetch group:', error)
       }
     }
 
-    fetchData()
-  }, [])
-
-  if (loading) {
-    return <div className="flex items-center justify-center min-h-screen">Loading...</div>
-  }
+    if (user?.id) {
+      fetchUserGroup()
+    }
+  }, [user?.id])
 
   return (
     <Layout>
@@ -43,22 +59,46 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="stat-card">
             <p className="text-gray-600 text-sm font-medium">Savings Balance</p>
-            <p className="text-3xl font-bold text-primary mt-2">₹{stats.savingsBalance.toFixed(2)}</p>
-            <p className="text-xs text-gray-500 mt-2">Updated today</p>
+            <p className="text-3xl font-bold text-primary mt-2">{formatCurrency(totalSavings)}</p>
+            <p className="text-xs text-gray-500 mt-2">Total accumulated</p>
           </div>
 
           <div className="stat-card">
             <p className="text-gray-600 text-sm font-medium">Active Loans</p>
-            <p className="text-3xl font-bold text-secondary mt-2">{stats.activeLoans}</p>
+            <p className="text-3xl font-bold text-secondary mt-2">{activeLoans}</p>
             <p className="text-xs text-gray-500 mt-2">Loans taken</p>
           </div>
 
           <div className="stat-card">
-            <p className="text-gray-600 text-sm font-medium">Next Payment</p>
-            <p className="text-3xl font-bold text-accent mt-2">-</p>
-            <p className="text-xs text-gray-500 mt-2">No pending payments</p>
+            <p className="text-gray-600 text-sm font-medium">Next Payment Due</p>
+            <p className="text-lg font-bold text-accent mt-2">{nextPaymentDue || '-'}</p>
+            <p className="text-xs text-gray-500 mt-2">Monthly savings</p>
           </div>
         </div>
+
+        {group && (
+          <div className="card">
+            <h3 className="font-semibold text-gray-900 mb-3">Group Details</h3>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <p className="text-gray-600">Group Name</p>
+                <p className="font-medium text-gray-900">{group.name}</p>
+              </div>
+              <div>
+                <p className="text-gray-600">Monthly Savings</p>
+                <p className="font-medium text-gray-900">{formatCurrency(group.monthly_savings_amount)}</p>
+              </div>
+              <div>
+                <p className="text-gray-600">Interest Rate</p>
+                <p className="font-medium text-gray-900">{group.interest_rate}% p.a.</p>
+              </div>
+              <div>
+                <p className="text-gray-600">Group Balance</p>
+                <p className="font-medium text-gray-900">{formatCurrency(group.current_balance)}</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="mt-8">
           <h2 className="text-xl font-bold text-gray-900 mb-4">Quick Actions</h2>
