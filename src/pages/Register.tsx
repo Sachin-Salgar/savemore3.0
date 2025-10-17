@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/hooks/useAuth'
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -11,8 +11,9 @@ export default function Register() {
     userType: 'member',
     groupCode: ''
   })
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [localError, setLocalError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const { register, error: authError } = useAuth()
   const navigate = useNavigate()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -22,45 +23,38 @@ export default function Register() {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
+    setLocalError('')
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match')
+      setLocalError('Passwords do not match')
       return
     }
 
     if (formData.userType === 'member' && !formData.groupCode) {
-      setError('Group code is required for members')
+      setLocalError('Group code is required for members')
       return
     }
 
-    setLoading(true)
+    setIsLoading(true)
 
     try {
-      const { error: authError } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        options: {
-          data: {
-            name: formData.name,
-            role: formData.userType,
-            group_code: formData.groupCode
-          }
-        }
-      })
+      const success = await register(
+        formData.email,
+        formData.password,
+        formData.name,
+        formData.userType,
+        formData.groupCode
+      )
 
-      if (authError) {
-        setError(authError.message)
-      } else {
+      if (success) {
         navigate('/login')
       }
-    } catch (err) {
-      setError('Failed to register')
-      console.error(err)
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
+
+  const error = localError || authError
 
   return (
     <div className="min-h-screen bg-light flex items-center justify-center p-4">
@@ -87,6 +81,7 @@ export default function Register() {
                 value={formData.userType}
                 onChange={handleChange}
                 className="input-field"
+                disabled={isLoading}
               >
                 <option value="member">Group Member</option>
                 <option value="president">Group President</option>
@@ -104,7 +99,7 @@ export default function Register() {
                 onChange={handleChange}
                 placeholder="Your full name"
                 className="input-field"
-                disabled={loading}
+                disabled={isLoading}
               />
             </div>
 
@@ -119,7 +114,7 @@ export default function Register() {
                 onChange={handleChange}
                 placeholder="you@example.com"
                 className="input-field"
-                disabled={loading}
+                disabled={isLoading}
               />
             </div>
 
@@ -135,7 +130,7 @@ export default function Register() {
                   onChange={handleChange}
                   placeholder="Enter group code"
                   className="input-field"
-                  disabled={loading}
+                  disabled={isLoading}
                 />
               </div>
             )}
@@ -151,7 +146,7 @@ export default function Register() {
                 onChange={handleChange}
                 placeholder="••••••••"
                 className="input-field"
-                disabled={loading}
+                disabled={isLoading}
               />
             </div>
 
@@ -166,16 +161,16 @@ export default function Register() {
                 onChange={handleChange}
                 placeholder="••••••••"
                 className="input-field"
-                disabled={loading}
+                disabled={isLoading}
               />
             </div>
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={isLoading}
               className="btn-primary w-full"
             >
-              {loading ? 'Registering...' : 'Register'}
+              {isLoading ? 'Registering...' : 'Register'}
             </button>
           </form>
 
