@@ -96,7 +96,7 @@ export default function Login() {
             <div className="space-y-2">
               <button
                 type="button"
-                onClick={() => handleDemoLogin('admin@demo.com', 'Admin@123456')}
+                onClick={() => handleDemoLogin('admin@demo.com', 'admin123')}
                 disabled={isLoading}
                 className="w-full px-4 py-2 bg-blue-100 text-primary border border-primary rounded-lg hover:bg-blue-50 disabled:opacity-50 text-sm font-medium transition-colors"
               >
@@ -104,7 +104,7 @@ export default function Login() {
               </button>
               <button
                 type="button"
-                onClick={() => handleDemoLogin('president@demo.com', 'President@123456')}
+                onClick={() => handleDemoLogin('president@demo.com', 'president123')}
                 disabled={isLoading}
                 className="w-full px-4 py-2 bg-green-100 text-secondary border border-secondary rounded-lg hover:bg-green-50 disabled:opacity-50 text-sm font-medium transition-colors"
               >
@@ -112,7 +112,7 @@ export default function Login() {
               </button>
               <button
                 type="button"
-                onClick={() => handleDemoLogin('member@demo.com', 'Member@123456')}
+                onClick={() => handleDemoLogin('member@demo.com', 'member123')}
                 disabled={isLoading}
                 className="w-full px-4 py-2 bg-amber-100 text-accent border border-accent rounded-lg hover:bg-amber-50 disabled:opacity-50 text-sm font-medium transition-colors"
               >
