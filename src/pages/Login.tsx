@@ -1,35 +1,25 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/hooks/useAuth'
 
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const { login, error } = useAuth()
   const navigate = useNavigate()
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
-    setLoading(true)
+    setIsLoading(true)
 
     try {
-      const { error: authError } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      })
-
-      if (authError) {
-        setError(authError.message)
-      } else {
+      const success = await login(email, password)
+      if (success) {
         navigate('/dashboard')
       }
-    } catch (err) {
-      setError('Failed to login')
-      console.error(err)
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
@@ -59,7 +49,7 @@ export default function Login() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 className="input-field"
-                disabled={loading}
+                disabled={isLoading}
               />
             </div>
 
@@ -73,24 +63,31 @@ export default function Login() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 className="input-field"
-                disabled={loading}
+                disabled={isLoading}
               />
             </div>
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={isLoading}
               className="btn-primary w-full"
             >
-              {loading ? 'Logging in...' : 'Login'}
+              {isLoading ? 'Logging in...' : 'Login'}
             </button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-gray-600">
-            Don't have an account?{' '}
-            <a href="/register" className="text-primary hover:underline font-medium">
-              Register here
-            </a>
+          <div className="mt-6 space-y-3 text-center text-sm text-gray-600">
+            <div>
+              Don't have an account?{' '}
+              <a href="/register" className="text-primary hover:underline font-medium">
+                Register here
+              </a>
+            </div>
+            <div>
+              <a href="/forgot-password" className="text-accent hover:underline font-medium">
+                Forgot password?
+              </a>
+            </div>
           </div>
         </div>
       </div>
