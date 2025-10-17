@@ -16,19 +16,19 @@ const supabaseAdmin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
 const demoUsers = [
   {
     email: 'admin@demo.com',
-    password: 'Admin@123456',
+    password: 'admin123',
     name: 'Admin Demo',
     role: 'admin'
   },
   {
     email: 'president@demo.com',
-    password: 'President@123456',
+    password: 'president123',
     name: 'President Demo',
     role: 'president'
   },
   {
     email: 'member@demo.com',
-    password: 'Member@123456',
+    password: 'member123',
     name: 'Member Demo',
     role: 'member'
   }
