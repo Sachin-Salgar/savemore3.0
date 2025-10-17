@@ -11,7 +11,7 @@ import Transactions from '@/pages/Transactions'
 import PresidentDashboard from '@/pages/PresidentDashboard'
 import Members from '@/pages/Members'
 import AdminDashboard from '@/pages/AdminDashboard'
-import AdminSetup from '@/pages/AdminSetup'
+import DemoSetup from '@/pages/DemoSetup'
 import ProtectedRoute from '@/components/ProtectedRoute'
 
 function App() {
