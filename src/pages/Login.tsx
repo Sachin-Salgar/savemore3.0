@@ -91,6 +91,36 @@ export default function Login() {
             </button>
           </form>
 
+          <div className="mt-8 pt-6 border-t border-gray-200">
+            <p className="text-xs text-gray-500 text-center mb-4 font-medium">DEMO ACCOUNTS</p>
+            <div className="space-y-2">
+              <button
+                type="button"
+                onClick={() => handleDemoLogin('admin@demo.com', 'Admin@123456')}
+                disabled={isLoading}
+                className="w-full px-4 py-2 bg-blue-100 text-primary border border-primary rounded-lg hover:bg-blue-50 disabled:opacity-50 text-sm font-medium transition-colors"
+              >
+                Admin Demo
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDemoLogin('president@demo.com', 'President@123456')}
+                disabled={isLoading}
+                className="w-full px-4 py-2 bg-green-100 text-secondary border border-secondary rounded-lg hover:bg-green-50 disabled:opacity-50 text-sm font-medium transition-colors"
+              >
+                President Demo
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDemoLogin('member@demo.com', 'Member@123456')}
+                disabled={isLoading}
+                className="w-full px-4 py-2 bg-amber-100 text-accent border border-accent rounded-lg hover:bg-amber-50 disabled:opacity-50 text-sm font-medium transition-colors"
+              >
+                Member Demo
+              </button>
+            </div>
+          </div>
+
           <div className="mt-6 space-y-3 text-center text-sm text-gray-600">
             <div>
               Don't have an account?{' '}
