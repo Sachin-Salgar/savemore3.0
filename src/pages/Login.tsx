@@ -23,6 +23,21 @@ export default function Login() {
     }
   }
 
+  const handleDemoLogin = async (demoEmail: string, demoPassword: string) => {
+    setEmail(demoEmail)
+    setPassword(demoPassword)
+    setIsLoading(true)
+
+    try {
+      const success = await login(demoEmail, demoPassword)
+      if (success) {
+        navigate('/dashboard')
+      }
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-light flex items-center justify-center p-4">
       <div className="w-full max-w-md">
