@@ -40,6 +40,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/setup-admin" element={<AdminSetup />} />
         <Route path="/login" element={user ? <Navigate to="/dashboard" replace /> : <Login />} />
         <Route path="/register" element={user ? <Navigate to="/dashboard" replace /> : <Register />} />
         <Route path="/forgot-password" element={user ? <Navigate to="/dashboard" replace /> : <ForgotPassword />} />
