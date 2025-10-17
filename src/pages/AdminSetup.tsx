@@ -1,39 +1,103 @@
 import { useState } from 'react'
-import { supabase } from '@/lib/supabase'
 
 export default function AdminSetup() {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [serviceRoleKey, setServiceRoleKey] = useState('')
 
   const createAdminUser = async () => {
+    if (!serviceRoleKey.trim()) {
+      setError('Please provide the service role key')
+      return
+    }
+
     setLoading(true)
     setMessage(null)
     setError(null)
 
     try {
-      // This endpoint requires server-side handling
-      const response = await fetch('/api/setup-admin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: 'admin@demo.com',
-          password: 'admin123',
-          name: 'Admin Demo',
-          role: 'admin'
-        })
-      })
+      const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://tjtakqkcxkrzhrwapylw.supabase.co'
 
-      const data = await response.json()
+      // Step 1: Get existing users
+      const listRes = await fetch(
+        `${SUPABASE_URL}/auth/v1/admin/users`,
+        {
+          headers: {
+            apikey: serviceRoleKey,
+            Authorization: `Bearer ${serviceRoleKey}`
+          }
+        }
+      )
 
-      if (!response.ok) {
-        setError(data.error || 'Failed to create admin user')
+      if (!listRes.ok) {
+        setError(`Failed to authenticate: ${listRes.statusText}`)
+        setLoading(false)
         return
       }
 
-      setMessage('✅ Admin user created successfully! Email: admin@demo.com, Password: admin123')
+      const { users } = await listRes.json() as any
+      let adminUser = users?.find((u: any) => u.email === 'admin@demo.com')
+
+      if (adminUser) {
+        setMessage(`Admin user already exists. Updating metadata...`)
+        // Update existing user
+        const updateRes = await fetch(
+          `${SUPABASE_URL}/auth/v1/admin/users/${adminUser.id}`,
+          {
+            method: 'PUT',
+            headers: {
+              apikey: serviceRoleKey,
+              Authorization: `Bearer ${serviceRoleKey}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              user_metadata: {
+                name: 'Admin Demo',
+                role: 'admin'
+              }
+            })
+          }
+        )
+
+        if (!updateRes.ok) {
+          setError(`Failed to update: ${await updateRes.text()}`)
+          setLoading(false)
+          return
+        }
+
+        setMessage('✅ Admin user updated successfully!\n\nEmail: admin@demo.com\nPassword: admin123')
+      } else {
+        // Create new user
+        const createRes = await fetch(
+          `${SUPABASE_URL}/auth/v1/admin/users`,
+          {
+            method: 'POST',
+            headers: {
+              apikey: serviceRoleKey,
+              Authorization: `Bearer ${serviceRoleKey}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              email: 'admin@demo.com',
+              password: 'admin123',
+              email_confirm: true,
+              user_metadata: {
+                name: 'Admin Demo',
+                role: 'admin'
+              }
+            })
+          }
+        )
+
+        if (!createRes.ok) {
+          setError(`Failed to create: ${await createRes.text()}`)
+          setLoading(false)
+          return
+        }
+
+        setMessage('✅ Admin user created successfully!\n\nEmail: admin@demo.com\nPassword: admin123')
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
