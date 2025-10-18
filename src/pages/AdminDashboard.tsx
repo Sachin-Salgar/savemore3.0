@@ -398,44 +398,66 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-semibold text-gray-900">Pending Group Registrations</h2>
             {stats.pendingGroups > 0 && (
-              <span className="px-3 py-1 rounded-full text-sm font-medium bg-accent text-white">
-                {stats.pendingGroups} Pending
+              <span className="relative">
+                <div className="absolute inset-0 bg-accent rounded-full blur animate-pulse"></div>
+                <span className="relative px-4 py-1 rounded-full text-sm font-medium bg-accent/20 text-accent border border-accent/50">
+                  {stats.pendingGroups} Pending
+                </span>
               </span>
             )}
           </div>
 
           {pendingRequests.length === 0 ? (
-            <div className="card text-center py-8">
-              <p className="text-gray-500">No pending approvals</p>
+            <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-12 border border-gray-700 text-center">
+              <div className="text-4xl mb-3">✓</div>
+              <p className="text-gray-400 font-medium">All caught up!</p>
+              <p className="text-gray-500 text-sm mt-1">No pending approvals at this moment</p>
             </div>
           ) : (
             <div className="space-y-3">
               {pendingRequests.map(request => (
-                <div key={request.id} className="card">
+                <div key={request.id} className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:border-accent/50 transition-all">
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex-1">
-                      <p className="font-medium text-gray-900">{request.name}</p>
-                      <p className="text-sm text-gray-600 mt-1">
-                        Submitted: {formatDate(request.createdAt)}
+                      <div className="flex items-center gap-2 mb-2">
+                        <p className="font-semibold text-gray-100">{request.name}</p>
+                        <span className="relative">
+                          <div className="absolute inset-0 bg-yellow-500 rounded-full blur animate-pulse"></div>
+                          <span className="relative px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-500/20 text-yellow-300 border border-yellow-500/50">
+                            Pending
+                          </span>
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-400">
+                        Submitted on {formatDate(request.createdAt)}
                       </p>
                     </div>
-                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">
-                      Pending
-                    </span>
+                    <div className="text-2xl">📋</div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 mb-4">
+                    <div className="bg-gray-700/50 rounded-lg p-3">
+                      <p className="text-xs text-gray-500">Group Type</p>
+                      <p className="text-sm font-medium text-gray-200 mt-1">Self Help Group</p>
+                    </div>
+                    <div className="bg-gray-700/50 rounded-lg p-3">
+                      <p className="text-xs text-gray-500">Status</p>
+                      <p className="text-sm font-medium text-yellow-400 mt-1">Under Review</p>
+                    </div>
                   </div>
 
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleApproveGroup(request.id)}
-                      className="btn-secondary flex-1 text-sm"
+                      className="flex-1 px-4 py-2 rounded-lg bg-gradient-to-r from-secondary to-emerald-600 text-white text-sm font-medium hover:shadow-lg hover:shadow-secondary/50 transition-all"
                     >
-                      Approve
+                      ✓ Approve
                     </button>
                     <button
                       onClick={() => handleRejectGroup(request.id)}
-                      className="btn-outline flex-1 text-sm"
+                      className="flex-1 px-4 py-2 rounded-lg border border-gray-600 text-gray-300 text-sm font-medium hover:border-red-500 hover:text-red-400 transition-all"
                     >
-                      Reject
+                      ✕ Reject
                     </button>
                   </div>
                 </div>
