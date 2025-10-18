@@ -547,14 +547,23 @@ export default function AdminDashboard() {
 
         {/* System Alerts */}
         {stats.pendingGroups > 3 && (
-          <section className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-            <div className="flex gap-3">
-              <div className="text-2xl">⚠️</div>
-              <div>
-                <p className="font-medium text-yellow-900">Action Required</p>
-                <p className="text-sm text-yellow-800 mt-1">
-                  {stats.pendingGroups} group registrations are pending approval. Please review them to keep the platform running smoothly.
-                </p>
+          <section>
+            <div className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 rounded-xl p-6 backdrop-blur-sm">
+              <div className="flex gap-4">
+                <div className="flex-shrink-0">
+                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-yellow-500/20 to-orange-500/20 flex items-center justify-center text-xl">⚠️</div>
+                </div>
+                <div className="flex-1">
+                  <p className="font-semibold text-yellow-100 mb-1">Action Required</p>
+                  <p className="text-sm text-yellow-200/80">
+                    {stats.pendingGroups} group registrations are pending approval. Review them promptly to maintain platform efficiency.
+                  </p>
+                  <div className="mt-3 flex gap-2">
+                    <a href="#" className="text-xs font-medium text-yellow-300 hover:text-yellow-200 transition-colors">
+                      View Pending →
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
