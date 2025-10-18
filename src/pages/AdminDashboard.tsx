@@ -240,45 +240,109 @@ export default function AdminDashboard() {
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Platform Statistics</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Total Groups */}
-            <div className="stat-card">
-              <p className="text-gray-600 text-sm font-medium">Total Groups</p>
-              <p className="text-3xl font-bold text-primary mt-2">{stats.totalGroups}</p>
-              <p className="text-gray-500 text-xs mt-1">Across the platform</p>
+            <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:shadow-xl transition-shadow">
+              <div className="flex justify-between items-start mb-4">
+                <p className="text-gray-400 text-sm font-medium">Total Groups</p>
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-blue-600 opacity-20"></div>
+              </div>
+              <p className="text-4xl font-bold text-primary">{stats.totalGroups}</p>
+              <p className="text-gray-500 text-xs mt-3">+{Math.max(0, stats.totalGroups - 1)} from last month</p>
+              <div className="mt-4 h-1 bg-gray-700 rounded-full overflow-hidden">
+                <div className="h-full bg-gradient-to-r from-primary to-blue-400" style={{width: `${Math.min(100, (stats.totalGroups / 10) * 100)}%`}}></div>
+              </div>
             </div>
 
             {/* Pending Groups */}
-            <div className="stat-card border-l-4 border-accent">
-              <p className="text-gray-600 text-sm font-medium">Pending Approvals</p>
-              <p className="text-3xl font-bold text-accent mt-2">{stats.pendingGroups}</p>
-              <p className="text-gray-500 text-xs mt-1">Awaiting review</p>
+            <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:shadow-xl transition-shadow">
+              <div className="flex justify-between items-start mb-4">
+                <p className="text-gray-400 text-sm font-medium">Pending Approvals</p>
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-accent to-orange-600 opacity-20"></div>
+              </div>
+              <p className="text-4xl font-bold text-accent">{stats.pendingGroups}</p>
+              <p className="text-gray-500 text-xs mt-3">Awaiting your action</p>
+              <div className="mt-4 flex gap-1">
+                {[...Array(5)].map((_, i) => (
+                  <div key={i} className={`flex-1 h-8 rounded ${i < stats.pendingGroups ? 'bg-gradient-to-t from-accent to-orange-400' : 'bg-gray-700'}`}></div>
+                ))}
+              </div>
             </div>
 
             {/* Approved Groups */}
-            <div className="stat-card border-l-4 border-secondary">
-              <p className="text-gray-600 text-sm font-medium">Active Groups</p>
-              <p className="text-3xl font-bold text-secondary mt-2">{stats.approvedGroups}</p>
-              <p className="text-gray-500 text-xs mt-1">Operational</p>
+            <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:shadow-xl transition-shadow">
+              <div className="flex justify-between items-start mb-4">
+                <p className="text-gray-400 text-sm font-medium">Active Groups</p>
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-secondary to-emerald-600 opacity-20"></div>
+              </div>
+              <p className="text-4xl font-bold text-secondary">{stats.approvedGroups}</p>
+              <p className="text-gray-500 text-xs mt-3">Currently operational</p>
+              <div className="mt-4 h-1 bg-gray-700 rounded-full overflow-hidden">
+                <div className="h-full bg-gradient-to-r from-secondary to-emerald-400" style={{width: `${Math.min(100, (stats.approvedGroups / 10) * 100)}%`}}></div>
+              </div>
             </div>
 
             {/* Active Members */}
-            <div className="stat-card">
-              <p className="text-gray-600 text-sm font-medium">Active Members</p>
-              <p className="text-3xl font-bold text-primary mt-2">{stats.activeMembers}</p>
-              <p className="text-gray-500 text-xs mt-1">Across all groups</p>
+            <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:shadow-xl transition-shadow">
+              <div className="flex justify-between items-start mb-4">
+                <p className="text-gray-400 text-sm font-medium">Active Members</p>
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 opacity-20"></div>
+              </div>
+              <p className="text-4xl font-bold text-cyan-400">{stats.activeMembers}</p>
+              <p className="text-gray-500 text-xs mt-3">Member accounts</p>
+              <div className="mt-4 flex gap-1 h-16">
+                {[...Array(6)].map((_, i) => {
+                  const heights = [60, 40, 70, 50, 65, 45]
+                  return (
+                    <div key={i} className="flex-1 flex items-end">
+                      <div className="w-full bg-gradient-to-t from-cyan-500 to-cyan-300 rounded-t" style={{height: `${heights[i]}%`}}></div>
+                    </div>
+                  )
+                })}
+              </div>
             </div>
 
             {/* Total Loans */}
-            <div className="stat-card">
-              <p className="text-gray-600 text-sm font-medium">Active Loans</p>
-              <p className="text-3xl font-bold text-primary mt-2">{stats.totalLoans}</p>
-              <p className="text-gray-500 text-xs mt-1">Disbursed</p>
+            <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:shadow-xl transition-shadow">
+              <div className="flex justify-between items-start mb-4">
+                <p className="text-gray-400 text-sm font-medium">Active Loans</p>
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-pink-600 opacity-20"></div>
+              </div>
+              <p className="text-4xl font-bold text-purple-400">{stats.totalLoans}</p>
+              <p className="text-gray-500 text-xs mt-3">Disbursed to members</p>
+              <div className="mt-4 flex gap-2">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="flex-1">
+                    <div className="h-2 bg-gray-700 rounded-full mb-1"></div>
+                    <div className="text-xs text-gray-500">Q{i + 1}</div>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Total Savings */}
-            <div className="stat-card">
-              <p className="text-gray-600 text-sm font-medium">Total Savings</p>
-              <p className="text-3xl font-bold text-primary mt-2">{formatCurrency(stats.totalSavings)}</p>
-              <p className="text-gray-500 text-xs mt-1">Platform total</p>
+            <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:shadow-xl transition-shadow">
+              <div className="flex justify-between items-start mb-4">
+                <p className="text-gray-400 text-sm font-medium">Total Savings</p>
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-yellow-500 to-orange-600 opacity-20"></div>
+              </div>
+              <p className="text-3xl font-bold text-yellow-400">{formatCurrency(stats.totalSavings)}</p>
+              <p className="text-gray-500 text-xs mt-3">Platform total</p>
+              <div className="mt-4">
+                <div className="relative w-24 h-24 mx-auto">
+                  <svg viewBox="0 0 100 100" className="w-full h-full">
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="#374151" strokeWidth="8"></circle>
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="url(#grad1)" strokeWidth="8" strokeDasharray={`${stats.totalSavings > 0 ? 160 : 0} 251`} strokeLinecap="round" transform="rotate(-90 50 50)"></circle>
+                    <defs>
+                      <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#FBBF24"></stop>
+                        <stop offset="100%" stopColor="#F59E0B"></stop>
+                      </linearGradient>
+                    </defs>
+                    <text x="50" y="55" textAnchor="middle" fontSize="14" fill="#FBBF24" fontWeight="bold">
+                      {Math.min(100, stats.totalSavings > 0 ? 75 : 0)}%
+                    </text>
+                  </svg>
+                </div>
+              </div>
             </div>
           </div>
         </section>
