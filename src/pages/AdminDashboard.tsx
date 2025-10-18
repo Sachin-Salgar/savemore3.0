@@ -40,41 +40,79 @@ export default function AdminDashboard() {
         setLoading(true)
         setError(null)
 
-        // Fetch groups statistics
-        const { data: groups, error: groupsError } = await supabase
-          .from('groups')
-          .select('id, status, created_at')
+        // Initialize default stats
+        let groups: any[] = []
+        let members: any[] = []
+        let loans: any[] = []
+        let savings: any[] = []
 
-        if (groupsError) throw groupsError
+        // Fetch groups statistics
+        try {
+          const { data, error: groupsError } = await supabase
+            .from('groups')
+            .select('id, status, created_at')
+
+          if (groupsError) {
+            console.warn('Groups fetch warning:', groupsError)
+          } else {
+            groups = data || []
+          }
+        } catch (err) {
+          console.warn('Groups fetch exception:', err)
+        }
 
         // Fetch group members count
-        const { data: members, error: membersError } = await supabase
-          .from('group_members')
-          .select('id, status')
+        try {
+          const { data, error: membersError } = await supabase
+            .from('group_members')
+            .select('id, status')
 
-        if (membersError) throw membersError
+          if (membersError) {
+            console.warn('Members fetch warning:', membersError)
+          } else {
+            members = data || []
+          }
+        } catch (err) {
+          console.warn('Members fetch exception:', err)
+        }
 
         // Fetch loans statistics
-        const { data: loans, error: loansError } = await supabase
-          .from('loans')
-          .select('id, loan_amount, status')
+        try {
+          const { data, error: loansError } = await supabase
+            .from('loans')
+            .select('id, loan_amount, status')
 
-        if (loansError) throw loansError
+          if (loansError) {
+            console.warn('Loans fetch warning:', loansError)
+          } else {
+            loans = data || []
+          }
+        } catch (err) {
+          console.warn('Loans fetch exception:', err)
+        }
 
         // Fetch savings statistics
-        const { data: savings, error: savingsError } = await supabase
-          .from('savings')
-          .select('amount')
+        try {
+          const { data, error: savingsError } = await supabase
+            .from('savings')
+            .select('amount')
 
-        if (savingsError) throw savingsError
+          if (savingsError) {
+            console.warn('Savings fetch warning:', savingsError)
+          } else {
+            savings = data || []
+          }
+        } catch (err) {
+          console.warn('Savings fetch exception:', err)
+        }
 
         // Calculate stats
-        const totalGroups = groups?.length || 0
-        const pendingGroups = groups?.filter(g => g.status === 'pending').length || 0
-        const approvedGroups = groups?.filter(g => g.status === 'approved').length || 0
-        const activeMembers = members?.filter(m => m.status === 'approved').length || 0
-        const totalLoans = loans?.length || 0
-        const totalSavings = savings?.reduce((sum, s) => sum + (s.amount || 0), 0) || 0
+        const totalGroups = groups.length
+        const pendingGroups = groups.filter(g => g.status === 'pending').length
+        const approvedGroups = groups.filter(g => g.status === 'approved').length
+        const activeMembers = members.filter(m => m.status === 'approved').length
+        const totalLoans = loans.length
+        const totalSavings = savings.reduce((sum, s) => sum + (s.amount || 0), 0)
 
         setStats({
           totalGroups,
@@ -92,7 +130,9 @@ export default function AdminDashboard() {
           .eq('status', 'pending')
           .limit(5)
 
-        if (pendingError) throw pendingError
+        if (pendingError) {
+          console.warn('Pending groups fetch warning:', pendingError)
+        }
 
         const requests = (pendingGroupsData || []).map(g => ({
           id: g.id,
