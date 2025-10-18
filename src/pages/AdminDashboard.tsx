@@ -450,31 +450,75 @@ export default function AdminDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <a
               href="#"
-              className="card hover:shadow-lg transition-shadow"
+              className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:shadow-xl transition-all hover:border-primary/50"
             >
-              <p className="font-medium text-gray-900 mb-2">View All Groups</p>
-              <p className="text-sm text-gray-600">Manage group registrations and details</p>
+              <div className="flex items-start justify-between mb-3">
+                <div>
+                  <p className="font-semibold text-gray-100 mb-1">View All Groups</p>
+                  <p className="text-sm text-gray-400">Manage group registrations and details</p>
+                </div>
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/30 to-blue-600/30 flex items-center justify-center text-xl">📊</div>
+              </div>
+              <div className="flex gap-2 mt-4">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="flex-1 h-1 bg-gray-700 rounded-full" style={{opacity: 1 - i * 0.3}}></div>
+                ))}
+              </div>
             </a>
+
             <a
               href="#"
-              className="card hover:shadow-lg transition-shadow"
+              className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:shadow-xl transition-all hover:border-secondary/50"
             >
-              <p className="font-medium text-gray-900 mb-2">User Management</p>
-              <p className="text-sm text-gray-600">Manage user roles and permissions</p>
+              <div className="flex items-start justify-between mb-3">
+                <div>
+                  <p className="font-semibold text-gray-100 mb-1">User Management</p>
+                  <p className="text-sm text-gray-400">Manage user roles and permissions</p>
+                </div>
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-secondary/30 to-emerald-600/30 flex items-center justify-center text-xl">👥</div>
+              </div>
+              <div className="flex gap-1 mt-4">
+                {[1, 2, 3, 4, 5].map((_, i) => (
+                  <div key={i} className="w-2 h-2 rounded-full bg-secondary/70"></div>
+                ))}
+              </div>
             </a>
+
             <a
               href="#"
-              className="card hover:shadow-lg transition-shadow"
+              className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:shadow-xl transition-all hover:border-accent/50"
             >
-              <p className="font-medium text-gray-900 mb-2">System Reports</p>
-              <p className="text-sm text-gray-600">View detailed analytics and reports</p>
+              <div className="flex items-start justify-between mb-3">
+                <div>
+                  <p className="font-semibold text-gray-100 mb-1">System Reports</p>
+                  <p className="text-sm text-gray-400">View detailed analytics and reports</p>
+                </div>
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-accent/30 to-orange-600/30 flex items-center justify-center text-xl">📈</div>
+              </div>
+              <div className="flex gap-1 mt-4 h-6">
+                {[...Array(4)].map((_, i) => {
+                  const heights = [40, 70, 50, 80]
+                  return (
+                    <div key={i} className="flex-1 bg-accent/50 rounded-t" style={{height: `${heights[i]}%`}}></div>
+                  )
+                })}
+              </div>
             </a>
+
             <a
               href="#"
-              className="card hover:shadow-lg transition-shadow"
+              className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:shadow-xl transition-all hover:border-cyan-500/50"
             >
-              <p className="font-medium text-gray-900 mb-2">Activity Logs</p>
-              <p className="text-sm text-gray-600">Review user activity and changes</p>
+              <div className="flex items-start justify-between mb-3">
+                <div>
+                  <p className="font-semibold text-gray-100 mb-1">Activity Logs</p>
+                  <p className="text-sm text-gray-400">Review user activity and changes</p>
+                </div>
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-cyan-500/30 to-blue-600/30 flex items-center justify-center text-xl">📋</div>
+              </div>
+              <div className="text-xs text-gray-500 mt-4">
+                <p>Last update: 2 minutes ago</p>
+              </div>
             </a>
           </div>
         </section>
