@@ -105,8 +105,9 @@ export default function AdminDashboard() {
 
         setPendingRequests(requests)
       } catch (err) {
-        console.error('Failed to fetch dashboard data:', err)
-        setError(err instanceof Error ? err.message : 'Failed to load dashboard')
+        const errorMsg = err instanceof Error ? err.message : JSON.stringify(err)
+        console.error('Failed to fetch dashboard data:', errorMsg, err)
+        setError(`Failed to load dashboard: ${errorMsg}`)
       } finally {
         setLoading(false)
       }
