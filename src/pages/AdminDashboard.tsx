@@ -40,13 +40,11 @@ export default function AdminDashboard() {
         setLoading(true)
         setError(null)
 
-        // Initialize default stats
         let groups: any[] = []
         let members: any[] = []
         let loans: any[] = []
         let savings: any[] = []
 
-        // Fetch groups statistics
         try {
           const { data, error: groupsError } = await supabase
             .from('groups')
@@ -61,7 +59,6 @@ export default function AdminDashboard() {
           console.warn('Groups fetch exception:', err)
         }
 
-        // Fetch group members count
         try {
           const { data, error: membersError } = await supabase
             .from('group_members')
@@ -76,7 +73,6 @@ export default function AdminDashboard() {
           console.warn('Members fetch exception:', err)
         }
 
-        // Fetch loans statistics
         try {
           const { data, error: loansError } = await supabase
             .from('loans')
@@ -91,7 +87,6 @@ export default function AdminDashboard() {
           console.warn('Loans fetch exception:', err)
         }
 
-        // Fetch savings statistics
         try {
           const { data, error: savingsError } = await supabase
             .from('savings')
@@ -106,7 +101,6 @@ export default function AdminDashboard() {
           console.warn('Savings fetch exception:', err)
         }
 
-        // Calculate stats
         const totalGroups = groups.length
         const pendingGroups = groups.filter(g => g.status === 'pending').length
         const approvedGroups = groups.filter(g => g.status === 'approved').length
@@ -123,7 +117,6 @@ export default function AdminDashboard() {
           totalSavings
         })
 
-        // Fetch pending requests (groups pending approval)
         const { data: pendingGroupsData, error: pendingError } = await supabase
           .from('groups')
           .select('id, name, created_at, status')
@@ -170,7 +163,7 @@ export default function AdminDashboard() {
       }
 
       setPendingRequests(prev => prev.filter(r => r.id !== groupId))
-
+      
       setStats(prev => ({
         ...prev,
         pendingGroups: Math.max(0, prev.pendingGroups - 1),
@@ -211,7 +204,7 @@ export default function AdminDashboard() {
   if (loading) {
     return (
       <Layout>
-        <div className="text-center py-12">
+        <div className="text-center py-8">
           <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">Loading dashboard...</p>
         </div>
@@ -221,241 +214,193 @@ export default function AdminDashboard() {
 
   return (
     <Layout>
-      <div className="space-y-8">
+      <div className="pb-4">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-          <p className="text-gray-600 mt-1">Platform overview and management</p>
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">
+                Platform Admin
+              </h1>
+              <p className="text-gray-600 text-sm mt-1">System overview</p>
+            </div>
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center text-white text-xl">
+              ⚙️
+            </div>
+          </div>
         </div>
 
         {/* Error Message */}
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+          <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
             {error}
           </div>
         )}
 
-        {/* Platform Statistics */}
-        <section>
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Platform Statistics</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Quick Stats - Horizontal Scroll */}
+        <div className="mb-6">
+          <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 snap-x snap-mandatory">
             {/* Total Groups */}
-            <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:shadow-xl transition-shadow">
-              <div className="flex justify-between items-start mb-4">
-                <p className="text-gray-400 text-sm font-medium">Total Groups</p>
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-blue-600 opacity-20"></div>
+            <div className="flex-shrink-0 w-64 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-5 border border-blue-200 snap-start hover:shadow-lg transition-shadow">
+              <div className="flex justify-between items-start mb-8">
+                <div>
+                  <p className="text-blue-600 text-xs font-semibold uppercase tracking-wider">Groups</p>
+                  <p className="text-blue-900 text-sm text-opacity-60 mt-1">Total</p>
+                </div>
+                <div className="text-3xl">📊</div>
               </div>
-              <p className="text-4xl font-bold text-primary">{stats.totalGroups}</p>
-              <p className="text-gray-500 text-xs mt-3">+{Math.max(0, stats.totalGroups - 1)} from last month</p>
-              <div className="mt-4 h-1 bg-gray-700 rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-primary to-blue-400" style={{width: `${Math.min(100, (stats.totalGroups / 10) * 100)}%`}}></div>
-              </div>
-            </div>
-
-            {/* Pending Groups */}
-            <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:shadow-xl transition-shadow">
-              <div className="flex justify-between items-start mb-4">
-                <p className="text-gray-400 text-sm font-medium">Pending Approvals</p>
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-accent to-orange-600 opacity-20"></div>
-              </div>
-              <p className="text-4xl font-bold text-accent">{stats.pendingGroups}</p>
-              <p className="text-gray-500 text-xs mt-3">Awaiting your action</p>
-              <div className="mt-4 flex gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <div key={i} className={`flex-1 h-8 rounded ${i < stats.pendingGroups ? 'bg-gradient-to-t from-accent to-orange-400' : 'bg-gray-700'}`}></div>
-                ))}
+              <p className="text-4xl font-bold text-blue-900">{stats.totalGroups}</p>
+              <div className="mt-4 pt-4 border-t border-blue-200">
+                <a href="#" className="text-blue-600 text-sm font-medium hover:text-blue-700">
+                  View All →
+                </a>
               </div>
             </div>
 
-            {/* Approved Groups */}
-            <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:shadow-xl transition-shadow">
-              <div className="flex justify-between items-start mb-4">
-                <p className="text-gray-400 text-sm font-medium">Active Groups</p>
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-secondary to-emerald-600 opacity-20"></div>
+            {/* Active Groups */}
+            <div className="flex-shrink-0 w-64 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-5 border border-green-200 snap-start hover:shadow-lg transition-shadow">
+              <div className="flex justify-between items-start mb-8">
+                <div>
+                  <p className="text-green-600 text-xs font-semibold uppercase tracking-wider">Active</p>
+                  <p className="text-green-900 text-sm text-opacity-60 mt-1">Operational</p>
+                </div>
+                <div className="text-3xl">✅</div>
               </div>
-              <p className="text-4xl font-bold text-secondary">{stats.approvedGroups}</p>
-              <p className="text-gray-500 text-xs mt-3">Currently operational</p>
-              <div className="mt-4 h-1 bg-gray-700 rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-secondary to-emerald-400" style={{width: `${Math.min(100, (stats.approvedGroups / 10) * 100)}%`}}></div>
-              </div>
-            </div>
-
-            {/* Active Members */}
-            <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:shadow-xl transition-shadow">
-              <div className="flex justify-between items-start mb-4">
-                <p className="text-gray-400 text-sm font-medium">Active Members</p>
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 opacity-20"></div>
-              </div>
-              <p className="text-4xl font-bold text-cyan-400">{stats.activeMembers}</p>
-              <p className="text-gray-500 text-xs mt-3">Member accounts</p>
-              <div className="mt-4 flex gap-1 h-16">
-                {[...Array(6)].map((_, i) => {
-                  const heights = [60, 40, 70, 50, 65, 45]
-                  return (
-                    <div key={i} className="flex-1 flex items-end">
-                      <div className="w-full bg-gradient-to-t from-cyan-500 to-cyan-300 rounded-t" style={{height: `${heights[i]}%`}}></div>
-                    </div>
-                  )
-                })}
+              <p className="text-4xl font-bold text-green-900">{stats.approvedGroups}</p>
+              <div className="mt-4 pt-4 border-t border-green-200">
+                <p className="text-green-600 text-sm font-medium">{((stats.approvedGroups / Math.max(stats.totalGroups, 1)) * 100).toFixed(0)}% approval rate</p>
               </div>
             </div>
 
-            {/* Total Loans */}
-            <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:shadow-xl transition-shadow">
-              <div className="flex justify-between items-start mb-4">
-                <p className="text-gray-400 text-sm font-medium">Active Loans</p>
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-pink-600 opacity-20"></div>
+            {/* Pending Approvals */}
+            <div className="flex-shrink-0 w-64 bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-5 border border-orange-200 snap-start hover:shadow-lg transition-shadow">
+              <div className="flex justify-between items-start mb-8">
+                <div>
+                  <p className="text-orange-600 text-xs font-semibold uppercase tracking-wider">Pending</p>
+                  <p className="text-orange-900 text-sm text-opacity-60 mt-1">Awaiting</p>
+                </div>
+                <div className="text-3xl">⏳</div>
               </div>
-              <p className="text-4xl font-bold text-purple-400">{stats.totalLoans}</p>
-              <p className="text-gray-500 text-xs mt-3">Disbursed to members</p>
-              <div className="mt-4 flex gap-2">
-                {[...Array(4)].map((_, i) => (
-                  <div key={i} className="flex-1">
-                    <div className="h-2 bg-gray-700 rounded-full mb-1"></div>
-                    <div className="text-xs text-gray-500">Q{i + 1}</div>
-                  </div>
-                ))}
+              <p className="text-4xl font-bold text-orange-900">{stats.pendingGroups}</p>
+              <div className="mt-4 pt-4 border-t border-orange-200">
+                <a href="#" className="text-orange-600 text-sm font-medium hover:text-orange-700">
+                  Review Now →
+                </a>
+              </div>
+            </div>
+
+            {/* Members */}
+            <div className="flex-shrink-0 w-64 bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-5 border border-purple-200 snap-start hover:shadow-lg transition-shadow">
+              <div className="flex justify-between items-start mb-8">
+                <div>
+                  <p className="text-purple-600 text-xs font-semibold uppercase tracking-wider">Members</p>
+                  <p className="text-purple-900 text-sm text-opacity-60 mt-1">Active</p>
+                </div>
+                <div className="text-3xl">👥</div>
+              </div>
+              <p className="text-4xl font-bold text-purple-900">{stats.activeMembers}</p>
+              <div className="mt-4 pt-4 border-t border-purple-200">
+                <p className="text-purple-600 text-sm font-medium">Across all groups</p>
               </div>
             </div>
 
             {/* Total Savings */}
-            <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:shadow-xl transition-shadow">
-              <div className="flex justify-between items-start mb-4">
-                <p className="text-gray-400 text-sm font-medium">Total Savings</p>
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-yellow-500 to-orange-600 opacity-20"></div>
-              </div>
-              <p className="text-3xl font-bold text-yellow-400">{formatCurrency(stats.totalSavings)}</p>
-              <p className="text-gray-500 text-xs mt-3">Platform total</p>
-              <div className="mt-4">
-                <div className="relative w-24 h-24 mx-auto">
-                  <svg viewBox="0 0 100 100" className="w-full h-full">
-                    <circle cx="50" cy="50" r="40" fill="none" stroke="#374151" strokeWidth="8"></circle>
-                    <circle cx="50" cy="50" r="40" fill="none" stroke="url(#grad1)" strokeWidth="8" strokeDasharray={`${stats.totalSavings > 0 ? 160 : 0} 251`} strokeLinecap="round" transform="rotate(-90 50 50)"></circle>
-                    <defs>
-                      <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#FBBF24"></stop>
-                        <stop offset="100%" stopColor="#F59E0B"></stop>
-                      </linearGradient>
-                    </defs>
-                    <text x="50" y="55" textAnchor="middle" fontSize="14" fill="#FBBF24" fontWeight="bold">
-                      {Math.min(100, stats.totalSavings > 0 ? 75 : 0)}%
-                    </text>
-                  </svg>
+            <div className="flex-shrink-0 w-64 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-2xl p-5 border border-yellow-200 snap-start hover:shadow-lg transition-shadow">
+              <div className="flex justify-between items-start mb-8">
+                <div>
+                  <p className="text-yellow-600 text-xs font-semibold uppercase tracking-wider">Savings</p>
+                  <p className="text-yellow-900 text-sm text-opacity-60 mt-1">Total</p>
                 </div>
+                <div className="text-3xl">💰</div>
+              </div>
+              <p className="text-2xl font-bold text-yellow-900">{formatCurrency(stats.totalSavings)}</p>
+              <div className="mt-4 pt-4 border-t border-yellow-200">
+                <p className="text-yellow-600 text-sm font-medium">Platform total</p>
               </div>
             </div>
           </div>
-        </section>
+        </div>
 
-        {/* System Health */}
-        <section>
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">System Health</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:shadow-xl transition-shadow">
-              <div className="flex items-center justify-between mb-4">
-                <p className="font-medium text-gray-100">Database Status</p>
-                <div className="relative">
-                  <div className="absolute inset-0 bg-green-500 rounded-full blur animate-pulse"></div>
-                  <span className="relative px-3 py-1 rounded-full text-xs font-medium bg-green-500/20 text-green-300 border border-green-500/50">● Healthy</span>
-                </div>
-              </div>
-              <p className="text-sm text-gray-400 mb-4">All systems operational</p>
-              <div className="space-y-2">
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>Uptime</span>
-                  <span className="text-green-400">99.9%</span>
-                </div>
-                <div className="w-full h-1 bg-gray-700 rounded-full overflow-hidden">
-                  <div className="h-full w-[99%] bg-gradient-to-r from-green-500 to-green-400"></div>
-                </div>
-              </div>
-            </div>
+        {/* Admin Actions */}
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-3">Management</h2>
+          <div className="grid grid-cols-2 gap-3">
+            {/* View Groups */}
+            <a href="#" className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200 hover:shadow-lg transition-all active:scale-95">
+              <div className="text-2xl mb-2">📋</div>
+              <p className="font-semibold text-blue-900 text-sm">All Groups</p>
+              <p className="text-blue-700 text-xs mt-1">Manage groups</p>
+            </a>
 
-            <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:shadow-xl transition-shadow">
-              <div className="flex items-center justify-between mb-4">
-                <p className="font-medium text-gray-100">API Status</p>
-                <div className="relative">
-                  <div className="absolute inset-0 bg-green-500 rounded-full blur animate-pulse"></div>
-                  <span className="relative px-3 py-1 rounded-full text-xs font-medium bg-green-500/20 text-green-300 border border-green-500/50">● Healthy</span>
-                </div>
-              </div>
-              <p className="text-sm text-gray-400 mb-4">Response time: under 100ms</p>
-              <div className="space-y-2">
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>Avg Response</span>
-                  <span className="text-cyan-400">42ms</span>
-                </div>
-                <div className="w-full h-1 bg-gray-700 rounded-full overflow-hidden">
-                  <div className="h-full w-[42%] bg-gradient-to-r from-cyan-500 to-cyan-400"></div>
-                </div>
-              </div>
-            </div>
+            {/* User Management */}
+            <a href="#" className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 border border-green-200 hover:shadow-lg transition-all active:scale-95">
+              <div className="text-2xl mb-2">👤</div>
+              <p className="font-semibold text-green-900 text-sm">Users</p>
+              <p className="text-green-700 text-xs mt-1">Manage roles</p>
+            </a>
+
+            {/* System Reports */}
+            <a href="#" className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 border border-purple-200 hover:shadow-lg transition-all active:scale-95">
+              <div className="text-2xl mb-2">📈</div>
+              <p className="font-semibold text-purple-900 text-sm">Reports</p>
+              <p className="text-purple-700 text-xs mt-1">Analytics</p>
+            </a>
+
+            {/* System Health */}
+            <a href="#" className="bg-gradient-to-br from-cyan-50 to-cyan-100 rounded-xl p-4 border border-cyan-200 hover:shadow-lg transition-all active:scale-95">
+              <div className="text-2xl mb-2">🔧</div>
+              <p className="font-semibold text-cyan-900 text-sm">System</p>
+              <p className="text-cyan-700 text-xs mt-1">Health check</p>
+            </a>
           </div>
-        </section>
+        </div>
 
-        {/* Pending Approvals */}
-        <section>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-gray-900">Pending Group Registrations</h2>
+        {/* Pending Approvals Section */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-semibold text-gray-900">Pending Approvals</h2>
             {stats.pendingGroups > 0 && (
               <span className="relative">
-                <div className="absolute inset-0 bg-accent rounded-full blur animate-pulse"></div>
-                <span className="relative px-4 py-1 rounded-full text-sm font-medium bg-accent/20 text-accent border border-accent/50">
-                  {stats.pendingGroups} Pending
+                <div className="absolute inset-0 bg-orange-500 rounded-full blur animate-pulse"></div>
+                <span className="relative px-3 py-1 rounded-full text-xs font-semibold bg-orange-500/20 text-orange-600 border border-orange-500/50">
+                  {stats.pendingGroups}
                 </span>
               </span>
             )}
           </div>
 
           {pendingRequests.length === 0 ? (
-            <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-12 border border-gray-700 text-center">
-              <div className="text-4xl mb-3">✓</div>
-              <p className="text-gray-400 font-medium">All caught up!</p>
-              <p className="text-gray-500 text-sm mt-1">No pending approvals at this moment</p>
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-8 border border-gray-200 text-center">
+              <div className="text-4xl mb-2">✓</div>
+              <p className="text-gray-900 font-medium">All caught up!</p>
+              <p className="text-gray-600 text-sm mt-1">No pending approvals</p>
             </div>
           ) : (
             <div className="space-y-3">
               {pendingRequests.map(request => (
-                <div key={request.id} className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:border-accent/50 transition-all">
-                  <div className="flex justify-between items-start mb-4">
+                <div key={request.id} className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-4 border border-orange-200">
+                  <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <p className="font-semibold text-gray-100">{request.name}</p>
-                        <span className="relative">
-                          <div className="absolute inset-0 bg-yellow-500 rounded-full blur animate-pulse"></div>
-                          <span className="relative px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-500/20 text-yellow-300 border border-yellow-500/50">
-                            Pending
-                          </span>
-                        </span>
-                      </div>
-                      <p className="text-sm text-gray-400">
-                        Submitted on {formatDate(request.createdAt)}
+                      <p className="font-semibold text-orange-900">{request.name}</p>
+                      <p className="text-orange-700 text-xs mt-1">
+                        Submitted {formatDate(request.createdAt)}
                       </p>
                     </div>
-                    <div className="text-2xl">📋</div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2 mb-4">
-                    <div className="bg-gray-700/50 rounded-lg p-3">
-                      <p className="text-xs text-gray-500">Group Type</p>
-                      <p className="text-sm font-medium text-gray-200 mt-1">Self Help Group</p>
-                    </div>
-                    <div className="bg-gray-700/50 rounded-lg p-3">
-                      <p className="text-xs text-gray-500">Status</p>
-                      <p className="text-sm font-medium text-yellow-400 mt-1">Under Review</p>
-                    </div>
+                    <span className="px-2 py-1 rounded-full text-xs font-medium bg-orange-500/20 text-orange-600">
+                      Review
+                    </span>
                   </div>
 
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleApproveGroup(request.id)}
-                      className="flex-1 px-4 py-2 rounded-lg bg-gradient-to-r from-secondary to-emerald-600 text-white text-sm font-medium hover:shadow-lg hover:shadow-secondary/50 transition-all"
+                      className="flex-1 px-3 py-2 rounded-lg bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs font-semibold hover:shadow-lg hover:shadow-green-500/50 transition-all"
                     >
                       ✓ Approve
                     </button>
                     <button
                       onClick={() => handleRejectGroup(request.id)}
-                      className="flex-1 px-4 py-2 rounded-lg border border-gray-600 text-gray-300 text-sm font-medium hover:border-red-500 hover:text-red-400 transition-all"
+                      className="flex-1 px-3 py-2 rounded-lg border border-red-300 text-red-600 text-xs font-semibold hover:bg-red-50 transition-all"
                     >
                       ✕ Reject
                     </button>
@@ -464,110 +409,37 @@ export default function AdminDashboard() {
               ))}
             </div>
           )}
-        </section>
+        </div>
 
-        {/* Quick Actions */}
-        <section>
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <a
-              href="#"
-              className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:shadow-xl transition-all hover:border-primary/50"
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <p className="font-semibold text-gray-100 mb-1">View All Groups</p>
-                  <p className="text-sm text-gray-400">Manage group registrations and details</p>
-                </div>
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/30 to-blue-600/30 flex items-center justify-center text-xl">📊</div>
-              </div>
-              <div className="flex gap-2 mt-4">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="flex-1 h-1 bg-gray-700 rounded-full" style={{opacity: 1 - i * 0.3}}></div>
-                ))}
-              </div>
-            </a>
-
-            <a
-              href="#"
-              className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:shadow-xl transition-all hover:border-secondary/50"
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <p className="font-semibold text-gray-100 mb-1">User Management</p>
-                  <p className="text-sm text-gray-400">Manage user roles and permissions</p>
-                </div>
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-secondary/30 to-emerald-600/30 flex items-center justify-center text-xl">👥</div>
-              </div>
-              <div className="flex gap-1 mt-4">
-                {[1, 2, 3, 4, 5].map((_, i) => (
-                  <div key={i} className="w-2 h-2 rounded-full bg-secondary/70"></div>
-                ))}
-              </div>
-            </a>
-
-            <a
-              href="#"
-              className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:shadow-xl transition-all hover:border-accent/50"
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <p className="font-semibold text-gray-100 mb-1">System Reports</p>
-                  <p className="text-sm text-gray-400">View detailed analytics and reports</p>
-                </div>
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-accent/30 to-orange-600/30 flex items-center justify-center text-xl">📈</div>
-              </div>
-              <div className="flex gap-1 mt-4 h-6">
-                {[...Array(4)].map((_, i) => {
-                  const heights = [40, 70, 50, 80]
-                  return (
-                    <div key={i} className="flex-1 bg-accent/50 rounded-t" style={{height: `${heights[i]}%`}}></div>
-                  )
-                })}
-              </div>
-            </a>
-
-            <a
-              href="#"
-              className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:shadow-xl transition-all hover:border-cyan-500/50"
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <p className="font-semibold text-gray-100 mb-1">Activity Logs</p>
-                  <p className="text-sm text-gray-400">Review user activity and changes</p>
-                </div>
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-cyan-500/30 to-blue-600/30 flex items-center justify-center text-xl">📋</div>
-              </div>
-              <div className="text-xs text-gray-500 mt-4">
-                <p>Last update: 2 minutes ago</p>
-              </div>
-            </a>
-          </div>
-        </section>
-
-        {/* System Alerts */}
-        {stats.pendingGroups > 3 && (
-          <section>
-            <div className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 rounded-xl p-6 backdrop-blur-sm">
-              <div className="flex gap-4">
-                <div className="flex-shrink-0">
-                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-yellow-500/20 to-orange-500/20 flex items-center justify-center text-xl">⚠️</div>
-                </div>
-                <div className="flex-1">
-                  <p className="font-semibold text-yellow-100 mb-1">Action Required</p>
-                  <p className="text-sm text-yellow-200/80">
-                    {stats.pendingGroups} group registrations are pending approval. Review them promptly to maintain platform efficiency.
-                  </p>
-                  <div className="mt-3 flex gap-2">
-                    <a href="#" className="text-xs font-medium text-yellow-300 hover:text-yellow-200 transition-colors">
-                      View Pending →
-                    </a>
-                  </div>
+        {/* System Status */}
+        <div>
+          <h2 className="text-lg font-semibold text-gray-900 mb-3">System Status</h2>
+          <div className="grid grid-cols-2 gap-3">
+            {/* Database */}
+            <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 border border-green-200">
+              <div className="flex items-center justify-between mb-2">
+                <p className="font-semibold text-green-900 text-sm">Database</p>
+                <div className="relative">
+                  <div className="absolute inset-0 bg-green-500 rounded-full blur animate-pulse"></div>
+                  <span className="relative w-2 h-2 rounded-full bg-green-500 block"></span>
                 </div>
               </div>
+              <p className="text-green-700 text-xs">Healthy</p>
             </div>
-          </section>
-        )}
+
+            {/* API */}
+            <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 border border-green-200">
+              <div className="flex items-center justify-between mb-2">
+                <p className="font-semibold text-green-900 text-sm">API</p>
+                <div className="relative">
+                  <div className="absolute inset-0 bg-green-500 rounded-full blur animate-pulse"></div>
+                  <span className="relative w-2 h-2 rounded-full bg-green-500 block"></span>
+                </div>
+              </div>
+              <p className="text-green-700 text-xs">Operational</p>
+            </div>
+          </div>
+        </div>
       </div>
     </Layout>
   )
