@@ -163,17 +163,23 @@ export default function AdminDashboard() {
         .update({ status: 'approved' })
         .eq('id', groupId)
 
-      if (error) throw error
+      if (error) {
+        console.error('Approve error:', error)
+        setError(`Failed to approve group: ${error.message}`)
+        return
+      }
 
       setPendingRequests(prev => prev.filter(r => r.id !== groupId))
-      
+
       setStats(prev => ({
         ...prev,
         pendingGroups: Math.max(0, prev.pendingGroups - 1),
         approvedGroups: prev.approvedGroups + 1
       }))
     } catch (err) {
-      console.error('Failed to approve group:', err)
+      const errorMsg = err instanceof Error ? err.message : String(err)
+      console.error('Failed to approve group:', errorMsg)
+      setError(`Failed to approve group: ${errorMsg}`)
     }
   }
 
@@ -184,7 +190,11 @@ export default function AdminDashboard() {
         .update({ status: 'rejected' })
         .eq('id', groupId)
 
-      if (error) throw error
+      if (error) {
+        console.error('Reject error:', error)
+        setError(`Failed to reject group: ${error.message}`)
+        return
+      }
 
       setPendingRequests(prev => prev.filter(r => r.id !== groupId))
       setStats(prev => ({
@@ -192,7 +202,9 @@ export default function AdminDashboard() {
         pendingGroups: Math.max(0, prev.pendingGroups - 1)
       }))
     } catch (err) {
-      console.error('Failed to reject group:', err)
+      const errorMsg = err instanceof Error ? err.message : String(err)
+      console.error('Failed to reject group:', errorMsg)
+      setError(`Failed to reject group: ${errorMsg}`)
     }
   }
 
