@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import Layout from '@/components/Layout'
 import { supabase } from '@/lib/supabase'
 import { formatCurrency, formatDate } from '@/utils/calculations'
+import { setupDemoGroup } from '@/utils/setupDemoData'
 
 interface GroupStats {
   totalGroups: number
