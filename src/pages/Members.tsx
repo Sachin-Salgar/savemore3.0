@@ -135,6 +135,14 @@ export default function Members() {
             </div>
           )}
         </div>
+
+        {showAddMembersModal && groupId && (
+          <AddMembersModal
+            groupId={groupId}
+            onClose={() => setShowAddMembersModal(false)}
+            onSuccess={handleAddMembersSuccess}
+          />
+        )}
       </div>
     </Layout>
   )
