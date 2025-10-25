@@ -57,15 +57,27 @@ export function useAuth() {
 
   const login = async (email: string, password: string) => {
     setError(null)
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    })
-    if (signInError) {
-      setError(signInError.message)
+    try {
+      if (!supabase) {
+        throw new Error('Supabase not initialized. Please check your environment variables.')
+      }
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      })
+      if (signInError) {
+        const errorMsg = signInError.message || 'Login failed. Please try again.'
+        setError(errorMsg)
+        console.error('[useAuth] Sign in error:', errorMsg)
+        return false
+      }
+      return true
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Network error. Please check your connection and try again.'
+      setError(errorMsg)
+      console.error('[useAuth] Login error:', errorMsg)
       return false
     }
-    return true
   }
 
   const register = async (
