@@ -34,6 +34,9 @@ export default function AdminDashboard() {
   const [pendingRequests, setPendingRequests] = useState<PendingRequest[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [demoSetupMessage, setDemoSetupMessage] = useState<string | null>(null)
+  const [demoSetupError, setDemoSetupError] = useState<string | null>(null)
+  const [demoSetupLoading, setDemoSetupLoading] = useState(false)
 
   useEffect(() => {
     const fetchDashboardData = async () => {
