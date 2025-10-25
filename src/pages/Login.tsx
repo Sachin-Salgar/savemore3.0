@@ -69,7 +69,12 @@ export default function Login() {
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">
-            {error && (
+            {configError && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                <strong>Configuration Error:</strong> {configError}
+              </div>
+            )}
+            {error && !configError && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
                 {error}
               </div>
