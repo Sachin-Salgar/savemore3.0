@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/lib/supabase'
 import Layout from '@/components/Layout'
@@ -14,6 +15,7 @@ interface GroupStats {
 
 export default function PresidentDashboard() {
   const { user } = useAuth()
+  const navigate = useNavigate()
   const [groupId, setGroupId] = useState<string | null>(null)
   const [groupName, setGroupName] = useState<string>('')
   const [stats, setStats] = useState<GroupStats>({
@@ -24,25 +26,29 @@ export default function PresidentDashboard() {
     groupBalance: 0
   })
   const [loading, setLoading] = useState(true)
+  const [hasGroup, setHasGroup] = useState(false)
 
   useEffect(() => {
     const fetchPresidentData = async () => {
       try {
         setLoading(true)
-        
+
         // Get president's group
         const { data: presidentData } = await supabase
           .from('group_members')
           .select('group_id')
           .eq('user_id', user?.id)
           .eq('role', 'president')
-          .single()
+          .maybeSingle()
 
         if (!presidentData) {
           setLoading(false)
+          setHasGroup(false)
+          navigate('/president-setup')
           return
         }
 
+        setHasGroup(true)
         setGroupId(presidentData.group_id)
 
         // Get group details
