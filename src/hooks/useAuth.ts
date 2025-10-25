@@ -86,9 +86,7 @@ export function useAuth() {
   ) => {
     setError(null)
     try {
-      if (!supabase) {
-        throw new Error('Supabase not initialized. Please check your environment variables.')
-      }
+      const supabase = getSupabase()
       const { error: signUpError } = await supabase.auth.signUp({
         email,
         password,
