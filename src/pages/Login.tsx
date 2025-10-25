@@ -119,32 +119,38 @@ export default function Login() {
 
           <div className="mt-8 pt-6 border-t border-gray-200">
             <p className="text-xs text-gray-500 text-center mb-4 font-medium">DEMO ACCOUNTS</p>
-            <div className="space-y-2">
-              <button
-                type="button"
-                onClick={() => handleDemoLogin('admin@demo.com', 'admin123')}
-                disabled={isLoading}
-                className="w-full px-4 py-2 bg-blue-100 text-primary border border-primary rounded-lg hover:bg-blue-50 disabled:opacity-50 text-sm font-medium transition-colors"
-              >
-                Admin Demo
-              </button>
-              <button
-                type="button"
-                onClick={() => handleDemoLogin('president@demo.com', 'president123')}
-                disabled={isLoading}
-                className="w-full px-4 py-2 bg-green-100 text-secondary border border-secondary rounded-lg hover:bg-green-50 disabled:opacity-50 text-sm font-medium transition-colors"
-              >
-                President Demo
-              </button>
-              <button
-                type="button"
-                onClick={() => handleDemoLogin('member@demo.com', 'member123')}
-                disabled={isLoading}
-                className="w-full px-4 py-2 bg-amber-100 text-accent border border-accent rounded-lg hover:bg-amber-50 disabled:opacity-50 text-sm font-medium transition-colors"
-              >
-                Member Demo
-              </button>
-            </div>
+            {configError ? (
+              <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-lg text-xs text-center">
+                Demo accounts unavailable due to configuration error
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <button
+                  type="button"
+                  onClick={() => handleDemoLogin('admin@demo.com', 'admin123')}
+                  disabled={isLoading}
+                  className="w-full px-4 py-2 bg-blue-100 text-primary border border-primary rounded-lg hover:bg-blue-50 disabled:opacity-50 text-sm font-medium transition-colors"
+                >
+                  Admin Demo
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDemoLogin('president@demo.com', 'president123')}
+                  disabled={isLoading}
+                  className="w-full px-4 py-2 bg-green-100 text-secondary border border-secondary rounded-lg hover:bg-green-50 disabled:opacity-50 text-sm font-medium transition-colors"
+                >
+                  President Demo
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDemoLogin('member@demo.com', 'member123')}
+                  disabled={isLoading}
+                  className="w-full px-4 py-2 bg-amber-100 text-accent border border-accent rounded-lg hover:bg-amber-50 disabled:opacity-50 text-sm font-medium transition-colors"
+                >
+                  Member Demo
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="mt-6 space-y-3 text-center text-sm text-gray-600">
