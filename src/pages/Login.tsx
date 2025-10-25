@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 
@@ -6,8 +6,25 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [configError, setConfigError] = useState<string | null>(null)
   const { login, error } = useAuth()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const checkConfig = () => {
+      const url = import.meta.env.VITE_SUPABASE_URL
+      const key = import.meta.env.VITE_SUPABASE_ANON_KEY
+
+      if (!url || !key) {
+        const missing = []
+        if (!url) missing.push('VITE_SUPABASE_URL')
+        if (!key) missing.push('VITE_SUPABASE_ANON_KEY')
+        setConfigError(`Missing environment variables: ${missing.join(', ')}`)
+      }
+    }
+
+    checkConfig()
+  }, [])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
