@@ -32,20 +32,23 @@ export default function PresidentDashboard() {
     const fetchPresidentData = async () => {
       try {
         setLoading(true)
-        
+
         // Get president's group
         const { data: presidentData } = await supabase
           .from('group_members')
           .select('group_id')
           .eq('user_id', user?.id)
           .eq('role', 'president')
-          .single()
+          .maybeSingle()
 
         if (!presidentData) {
           setLoading(false)
+          setHasGroup(false)
+          navigate('/president-setup')
           return
         }
 
+        setHasGroup(true)
         setGroupId(presidentData.group_id)
 
         // Get group details
