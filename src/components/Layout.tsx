@@ -72,22 +72,39 @@ export default function Layout({ children }: LayoutProps) {
               
               <div className="space-y-2">
                 <a href="/transactions" className="block px-4 py-2 text-gray-700 hover:bg-light rounded">
-                  Transactions
+                  📋 Transactions
+                </a>
+
+                {user?.user_metadata?.role === 'president' && (
+                  <a href="/members" className="block px-4 py-2 text-gray-700 hover:bg-light rounded">
+                    👥 Members
+                  </a>
+                )}
+
+                {user?.user_metadata?.role === 'admin' && (
+                  <>
+                    <a href="/admin/members" className="block px-4 py-2 text-gray-700 hover:bg-light rounded">
+                      👥 Members
+                    </a>
+                    <div className="border-t border-gray-200 my-2"></div>
+                    <p className="px-4 py-2 text-xs font-medium text-gray-500 uppercase">Admin</p>
+                  </>
+                )}
+
+                <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-light rounded">
+                  🔔 Notifications
                 </a>
                 <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-light rounded">
-                  Notifications
+                  ⚙️ Settings
                 </a>
                 <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-light rounded">
-                  Settings
-                </a>
-                <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-light rounded">
-                  Help
+                  ❓ Help
                 </a>
                 <button
                   onClick={handleLogout}
                   className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 rounded"
                 >
-                  Logout
+                  🚪 Logout
                 </button>
               </div>
             </div>
