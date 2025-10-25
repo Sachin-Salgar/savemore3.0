@@ -18,9 +18,7 @@ export function useAuth() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        if (!supabase) {
-          throw new Error('Supabase not initialized. Please check your environment variables.')
-        }
+        const supabase = getSupabase()
         const { data: { session } } = await supabase.auth.getSession()
         if (session?.user) {
           setUser(session.user as AuthUser)
@@ -37,6 +35,7 @@ export function useAuth() {
     checkAuth()
 
     try {
+      const supabase = getSupabase()
       const { data: { subscription } } = supabase.auth.onAuthStateChange(
         (_event, session) => {
           if (session?.user) {
