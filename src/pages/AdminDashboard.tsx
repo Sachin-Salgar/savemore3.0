@@ -326,10 +326,10 @@ export default function AdminDashboard() {
           <h2 className="text-lg font-semibold text-gray-900 mb-3">Management</h2>
           <div className="grid grid-cols-2 gap-3">
             {/* View Groups */}
-            <a href="#" className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200 hover:shadow-lg transition-all active:scale-95">
+            <a href="/admin/groups" className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200 hover:shadow-lg transition-all active:scale-95">
               <div className="text-2xl mb-2">📋</div>
-              <p className="font-semibold text-blue-900 text-sm">All Groups</p>
-              <p className="text-blue-700 text-xs mt-1">Manage groups</p>
+              <p className="font-semibold text-blue-900 text-sm">Groups</p>
+              <p className="text-blue-700 text-xs mt-1">Create & assign</p>
             </a>
 
             {/* User Management */}
