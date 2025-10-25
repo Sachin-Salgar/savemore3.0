@@ -116,9 +116,7 @@ export function useAuth() {
   const logout = async () => {
     setError(null)
     try {
-      if (!supabase) {
-        throw new Error('Supabase not initialized.')
-      }
+      const supabase = getSupabase()
       const { error: signOutError } = await supabase.auth.signOut()
       if (signOutError) {
         const errorMsg = signOutError.message || 'Logout failed.'
