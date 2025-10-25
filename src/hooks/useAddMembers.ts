@@ -25,56 +25,71 @@ export function useAddMembers() {
     setError(null)
 
     try {
-      // First, check if user exists by email
-      const { data: existingUser, error: getUserError } = await supabase
-        .from('user_profiles')
-        .select('id')
-        .eq('email', memberData.email)
-        .maybeSingle()
+      // Generate a temporary password
+      const tempPassword = Math.random().toString(36).substring(2, 15) +
+                          Math.random().toString(36).substring(2, 15)
 
-      if (getUserError && getUserError.code !== 'PGRST116') {
-        throw new Error(`Failed to check existing user: ${getUserError.message}`)
-      }
+      // Create new user via auth
+      const { data: authData, error: signUpError } = await supabase.auth.signUp({
+        email: memberData.email,
+        password: tempPassword,
+        options: {
+          data: {
+            name: memberData.name,
+            role: 'member'
+          }
+        }
+      })
 
-      let userId: string
+      if (signUpError) {
+        // Check if user already exists
+        if (signUpError.message.includes('already registered')) {
+          // User exists, try to get their ID from a different approach
+          const { data: { users }, error: listError } = await supabase.auth.admin.listUsers()
 
-      if (existingUser) {
-        userId = existingUser.id
-      } else {
-        // Create new user via auth
-        const { data: authData, error: signUpError } = await supabase.auth.signUp({
-          email: memberData.email,
-          password: Math.random().toString(36).substring(2, 15),
-          options: {
-            data: {
-              name: memberData.name,
-              role: 'member'
+          if (!listError && users) {
+            const existingUser = users.find(u => u.email === memberData.email)
+            if (existingUser) {
+              // Add existing user to group
+              const { error: memberError } = await supabase
+                .from('group_members')
+                .insert({
+                  group_id: groupId,
+                  user_id: existingUser.id,
+                  role: 'member',
+                  status: 'pending'
+                })
+
+              if (memberError) {
+                if (memberError.code === '23505') {
+                  throw new Error('Member is already part of this group')
+                }
+                throw new Error(`Failed to add member: ${memberError.message}`)
+              }
+              return true
             }
           }
+        }
+        throw new Error(`Failed to create user: ${signUpError.message}`)
+      }
+
+      if (!authData.user?.id) {
+        throw new Error('Failed to get user ID')
+      }
+
+      const userId = authData.user.id
+
+      // Create user profile
+      const { error: profileError } = await supabase
+        .from('user_profiles')
+        .insert({
+          id: userId,
+          full_name: memberData.name,
+          phone_number: memberData.phone
         })
 
-        if (signUpError) {
-          throw new Error(`Failed to create user: ${signUpError.message}`)
-        }
-
-        if (!authData.user?.id) {
-          throw new Error('Failed to get user ID')
-        }
-
-        userId = authData.user.id
-
-        // Create user profile
-        const { error: profileError } = await supabase
-          .from('user_profiles')
-          .insert({
-            id: userId,
-            full_name: memberData.name,
-            phone_number: memberData.phone
-          })
-
-        if (profileError) {
-          console.warn('Failed to create user profile:', profileError)
-        }
+      if (profileError && profileError.code !== '23505') {
+        console.warn('Failed to create user profile:', profileError)
       }
 
       // Add member to group
