@@ -137,9 +137,7 @@ export function useAuth() {
   const resetPassword = async (email: string) => {
     setError(null)
     try {
-      if (!supabase) {
-        throw new Error('Supabase not initialized. Please check your environment variables.')
-      }
+      const supabase = getSupabase()
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(email)
       if (resetError) {
         const errorMsg = resetError.message || 'Password reset failed.'
