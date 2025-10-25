@@ -18,6 +18,8 @@ export default function Login() {
       if (success) {
         navigate('/dashboard')
       }
+    } catch (err) {
+      console.error('Login error:', err)
     } finally {
       setIsLoading(false)
     }
@@ -33,6 +35,8 @@ export default function Login() {
       if (success) {
         navigate('/dashboard')
       }
+    } catch (err) {
+      console.error('Demo login error:', err)
     } finally {
       setIsLoading(false)
     }
