@@ -2,13 +2,15 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { useGroupMembers } from '@/hooks/useGroupMembers'
 import Layout from '@/components/Layout'
+import AddMembersModal from '@/components/AddMembersModal'
 import { formatCurrency, formatDate } from '@/utils/calculations'
 import { supabase } from '@/lib/supabase'
 
 export default function Members() {
   const { user } = useAuth()
   const [groupId, setGroupId] = useState<string | null>(null)
-  const { members, loading, approveMember, rejectMember } = useGroupMembers(groupId || undefined)
+  const [showAddMembersModal, setShowAddMembersModal] = useState(false)
+  const { members, loading, approveMember, rejectMember, refetch } = useGroupMembers(groupId || undefined)
 
   useEffect(() => {
     const fetchPresidentGroup = async () => {
