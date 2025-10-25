@@ -15,8 +15,8 @@ const initializeSupabase = (): SupabaseClient => {
     supabaseAnonKey = supabaseAnonKey.trim().replace(/^["']|["']$/g, '')
   }
 
-  console.log('[Supabase] Initializing with URL:', supabaseUrl ? 'present' : 'missing')
-  console.log('[Supabase] Initializing with key:', supabaseAnonKey ? 'present' : 'missing')
+  console.log('[Supabase] URL:', supabaseUrl)
+  console.log('[Supabase] Key present:', !!supabaseAnonKey)
 
   if (!supabaseUrl) {
     throw new Error(
@@ -46,29 +46,9 @@ export const getSupabase = (): SupabaseClient => {
   return initializeSupabase()
 }
 
-export { supabase } from './supabase-instance'
-
-function createSupabaseExport() {
-  return new Proxy({} as SupabaseClient, {
-    get: (_target, prop) => {
-      try {
-        const instance = initializeSupabase()
-        return (instance as any)[prop]
-      } catch (error) {
-        console.error('[Supabase] Error accessing property:', prop, error)
-        throw error
-      }
-    }
-  })
-}
-
-let supabaseExportInstance: SupabaseClient | null = null
-
-Object.defineProperty(module, 'supabase', {
-  get() {
-    if (!supabaseExportInstance) {
-      supabaseExportInstance = createSupabaseExport()
-    }
-    return supabaseExportInstance
+export const supabase = new Proxy({} as SupabaseClient, {
+  get: (_target, prop) => {
+    const instance = initializeSupabase()
+    return (instance as any)[prop]
   }
 })
