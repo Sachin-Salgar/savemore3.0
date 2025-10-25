@@ -88,43 +88,79 @@ export function useAuth() {
     groupCode?: string
   ) => {
     setError(null)
-    const { error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          name,
-          role,
-          group_code: groupCode
-        }
+    try {
+      if (!supabase) {
+        throw new Error('Supabase not initialized. Please check your environment variables.')
       }
-    })
-    if (signUpError) {
-      setError(signUpError.message)
+      const { error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            name,
+            role,
+            group_code: groupCode
+          }
+        }
+      })
+      if (signUpError) {
+        const errorMsg = signUpError.message || 'Registration failed. Please try again.'
+        setError(errorMsg)
+        console.error('[useAuth] Sign up error:', errorMsg)
+        return false
+      }
+      return true
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Network error during registration.'
+      setError(errorMsg)
+      console.error('[useAuth] Register error:', errorMsg)
       return false
     }
-    return true
   }
 
   const logout = async () => {
     setError(null)
-    const { error: signOutError } = await supabase.auth.signOut()
-    if (signOutError) {
-      setError(signOutError.message)
+    try {
+      if (!supabase) {
+        throw new Error('Supabase not initialized.')
+      }
+      const { error: signOutError } = await supabase.auth.signOut()
+      if (signOutError) {
+        const errorMsg = signOutError.message || 'Logout failed.'
+        setError(errorMsg)
+        console.error('[useAuth] Sign out error:', errorMsg)
+        return false
+      }
+      setUser(null)
+      return true
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Logout error.'
+      setError(errorMsg)
+      console.error('[useAuth] Logout error:', errorMsg)
       return false
     }
-    setUser(null)
-    return true
   }
 
   const resetPassword = async (email: string) => {
     setError(null)
-    const { error: resetError } = await supabase.auth.resetPasswordForEmail(email)
-    if (resetError) {
-      setError(resetError.message)
+    try {
+      if (!supabase) {
+        throw new Error('Supabase not initialized. Please check your environment variables.')
+      }
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email)
+      if (resetError) {
+        const errorMsg = resetError.message || 'Password reset failed.'
+        setError(errorMsg)
+        console.error('[useAuth] Reset error:', errorMsg)
+        return false
+      }
+      return true
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Network error during password reset.'
+      setError(errorMsg)
+      console.error('[useAuth] Reset error:', errorMsg)
       return false
     }
-    return true
   }
 
   return {
