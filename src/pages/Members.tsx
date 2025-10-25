@@ -42,12 +42,25 @@ export default function Members() {
   const pendingMembers = members.filter(m => m.status === 'pending')
   const approvedMembers = members.filter(m => m.status === 'approved')
 
+  const handleAddMembersSuccess = () => {
+    setShowAddMembersModal(false)
+    refetch()
+  }
+
   return (
     <Layout>
       <div className="space-y-6">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Members Management</h1>
-          <p className="text-gray-600 mt-1">Manage your group members</p>
+        <div className="mb-6 flex justify-between items-start">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Members Management</h1>
+            <p className="text-gray-600 mt-1">Manage your group members</p>
+          </div>
+          <button
+            onClick={() => setShowAddMembersModal(true)}
+            className="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center gap-2"
+          >
+            + Add Members
+          </button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
