@@ -81,10 +81,19 @@ export default function Layout({ children }: LayoutProps) {
                   </a>
                 )}
 
+                {user?.user_metadata?.role === 'president' && (
+                  <a href="/president-setup" className="block px-4 py-2 text-gray-700 hover:bg-light rounded">
+                    ⚙️ Setup Group
+                  </a>
+                )}
+
                 {user?.user_metadata?.role === 'admin' && (
                   <>
                     <a href="/admin/members" className="block px-4 py-2 text-gray-700 hover:bg-light rounded">
                       👥 Members
+                    </a>
+                    <a href="/admin/groups" className="block px-4 py-2 text-gray-700 hover:bg-light rounded">
+                      📋 Groups
                     </a>
                     <div className="border-t border-gray-200 my-2"></div>
                     <p className="px-4 py-2 text-xs font-medium text-gray-500 uppercase">Admin</p>
