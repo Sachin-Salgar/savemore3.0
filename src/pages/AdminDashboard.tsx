@@ -333,10 +333,10 @@ export default function AdminDashboard() {
             </a>
 
             {/* User Management */}
-            <a href="#" className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 border border-green-200 hover:shadow-lg transition-all active:scale-95">
-              <div className="text-2xl mb-2">👤</div>
-              <p className="font-semibold text-green-900 text-sm">Users</p>
-              <p className="text-green-700 text-xs mt-1">Manage roles</p>
+            <a href="/admin/members" className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 border border-green-200 hover:shadow-lg transition-all active:scale-95">
+              <div className="text-2xl mb-2">👥</div>
+              <p className="font-semibold text-green-900 text-sm">Members</p>
+              <p className="text-green-700 text-xs mt-1">Add/manage members</p>
             </a>
 
             {/* System Reports */}
