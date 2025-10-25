@@ -42,39 +42,11 @@ export function useAddMembers() {
       })
 
       if (signUpError) {
-        // Check if user already exists
-        if (signUpError.message.includes('already registered')) {
-          // User exists, try to get their ID from a different approach
-          const { data: { users }, error: listError } = await supabase.auth.admin.listUsers()
-
-          if (!listError && users) {
-            const existingUser = users.find(u => u.email === memberData.email)
-            if (existingUser) {
-              // Add existing user to group
-              const { error: memberError } = await supabase
-                .from('group_members')
-                .insert({
-                  group_id: groupId,
-                  user_id: existingUser.id,
-                  role: 'member',
-                  status: 'pending'
-                })
-
-              if (memberError) {
-                if (memberError.code === '23505') {
-                  throw new Error('Member is already part of this group')
-                }
-                throw new Error(`Failed to add member: ${memberError.message}`)
-              }
-              return true
-            }
-          }
-        }
         throw new Error(`Failed to create user: ${signUpError.message}`)
       }
 
       if (!authData.user?.id) {
-        throw new Error('Failed to get user ID')
+        throw new Error('Failed to get user ID from signup')
       }
 
       const userId = authData.user.id
