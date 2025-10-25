@@ -56,6 +56,9 @@ function App() {
         {/* President Routes */}
         <Route path="/members" element={<ProtectedRoute requiredRole="president"><Members /></ProtectedRoute>} />
 
+        {/* Admin Routes */}
+        <Route path="/admin/members" element={<ProtectedRoute requiredRole="admin"><AdminMembers /></ProtectedRoute>} />
+
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
