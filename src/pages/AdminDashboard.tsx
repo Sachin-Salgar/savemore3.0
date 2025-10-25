@@ -205,6 +205,22 @@ export default function AdminDashboard() {
     }
   }
 
+  const handleSetupDemoGroup = async () => {
+    setDemoSetupLoading(true)
+    setDemoSetupMessage(null)
+    setDemoSetupError(null)
+
+    const result = await setupDemoGroup()
+
+    if (result.success) {
+      setDemoSetupMessage(result.message)
+    } else {
+      setDemoSetupError(result.message)
+    }
+
+    setDemoSetupLoading(false)
+  }
+
   if (loading) {
     return (
       <Layout>
