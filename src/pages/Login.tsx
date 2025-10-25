@@ -110,8 +110,8 @@ export default function Login() {
 
             <button
               type="submit"
-              disabled={isLoading}
-              className="btn-primary w-full"
+              disabled={isLoading || !!configError}
+              className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? 'Logging in...' : 'Login'}
             </button>
