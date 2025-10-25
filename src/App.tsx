@@ -56,10 +56,12 @@ function App() {
         <Route path="/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} />
 
         {/* President Routes */}
+        <Route path="/president-setup" element={<ProtectedRoute requiredRole="president"><PresidentSetup /></ProtectedRoute>} />
         <Route path="/members" element={<ProtectedRoute requiredRole="president"><Members /></ProtectedRoute>} />
 
         {/* Admin Routes */}
         <Route path="/admin/members" element={<ProtectedRoute requiredRole="admin"><AdminMembers /></ProtectedRoute>} />
+        <Route path="/admin/groups" element={<ProtectedRoute requiredRole="admin"><AdminGroups /></ProtectedRoute>} />
 
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
