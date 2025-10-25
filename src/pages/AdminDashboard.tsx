@@ -375,6 +375,35 @@ export default function AdminDashboard() {
           </div>
         </div>
 
+        {/* Demo Setup Section */}
+        <div className="mb-6 bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-4">
+          <h2 className="text-lg font-semibold text-gray-900 mb-3">Demo Setup</h2>
+
+          {demoSetupMessage && (
+            <div className="mb-3 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
+              {demoSetupMessage}
+            </div>
+          )}
+
+          {demoSetupError && (
+            <div className="mb-3 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+              {demoSetupError}
+            </div>
+          )}
+
+          <p className="text-sm text-gray-600 mb-3">
+            Set up the demo group "MADHURANGAN" and assign it to president@demo.com. Make sure to create demo users first.
+          </p>
+
+          <button
+            onClick={handleSetupDemoGroup}
+            disabled={demoSetupLoading}
+            className="px-4 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 disabled:opacity-50 transition-colors text-sm"
+          >
+            {demoSetupLoading ? '⏳ Setting up...' : '🎬 Setup Demo Group'}
+          </button>
+        </div>
+
         {/* Pending Approvals Section */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-3">
