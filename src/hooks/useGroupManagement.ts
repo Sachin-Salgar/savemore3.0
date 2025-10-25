@@ -18,6 +18,8 @@ export function useGroupManagement() {
     setError(null)
 
     try {
+      const supabase = getSupabase()
+
       // Validate group code format
       if (!groupData.code || groupData.code.trim().length === 0) {
         throw new Error('Group code is required')
@@ -83,6 +85,8 @@ export function useGroupManagement() {
     setError(null)
 
     try {
+      const supabase = getSupabase()
+
       // Check if president is already assigned to a group
       const { data: existingAssignment } = await supabase
         .from('group_members')
@@ -122,6 +126,7 @@ export function useGroupManagement() {
 
   const getGroupsByStatus = async (status?: string) => {
     try {
+      const supabase = getSupabase()
       let query = supabase.from('groups').select('*')
 
       if (status) {
@@ -147,6 +152,8 @@ export function useGroupManagement() {
 
   const getPresidentsWithoutGroup = async () => {
     try {
+      const supabase = getSupabase()
+
       // Get all users with president role
       const { data: presidents, error: fetchError } = await supabase
         .from('user_profiles')
@@ -190,6 +197,7 @@ export function useGroupManagement() {
 
   const checkPresidentHasGroup = async (userId: string): Promise<boolean> => {
     try {
+      const supabase = getSupabase()
       const { data } = await supabase
         .from('group_members')
         .select('id')
