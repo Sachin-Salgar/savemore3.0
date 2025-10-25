@@ -57,9 +57,7 @@ export function useAuth() {
   const login = async (email: string, password: string) => {
     setError(null)
     try {
-      if (!supabase) {
-        throw new Error('Supabase not initialized. Please check your environment variables.')
-      }
+      const supabase = getSupabase()
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password
