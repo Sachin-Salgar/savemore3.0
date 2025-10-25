@@ -15,5 +15,8 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true
+  },
+  define: {
+    __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
   }
 })
