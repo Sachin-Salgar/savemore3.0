@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/lib/supabase'
 
 interface LayoutProps {
@@ -10,6 +11,7 @@ export default function Layout({ children }: LayoutProps) {
   const [menuOpen, setMenuOpen] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
+  const { user } = useAuth()
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
