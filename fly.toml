@@ -1,0 +1,28 @@
+# Fly.io configuration for SaveMore
+
+app = "savemore"
+primary_region = "iad"
+
+[build]
+  builder = "heroku"
+
+[env]
+  VITE_SUPABASE_URL = "https://tjtakqkcxkrzhrwapylw.supabase.co"
+  VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdGFrcWtjeGtyemhyd2FweWx3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2NDQ4OTIsImV4cCI6MjA3NjIyMDg5Mn0.TS4-6EkLtsZgwLnAJJjEDJM4AS0TuCiyWqjpguUyytw"
+  SUPABASE_SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdGFrcWtjeGtyemhyd2FweWx3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MDY0NDg5MiwiZXhwIjoyMDc2MjIwODkyfQ.XcLZ-QeRTknEVf0NqPS2i961bHjOIZJj-2ZN5oSf5ho"
+
+[[services]]
+  internal_port = 3000
+  processes = ["app"]
+
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
+  [[services.tcp_checks]]
+    grace_period = "10s"
+    interval = "15s"
+    timeout = "2s"
+    type = "connect"
