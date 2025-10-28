@@ -58,6 +58,7 @@ export function useAuth() {
     setError(null)
     try {
       const supabase = getSupabase()
+      console.log('[useAuth] Attempting login with:', { email, supabaseUrl: import.meta.env.VITE_SUPABASE_URL })
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password
@@ -65,14 +66,15 @@ export function useAuth() {
       if (signInError) {
         const errorMsg = signInError.message || 'Login failed. Please try again.'
         setError(errorMsg)
-        console.error('[useAuth] Sign in error:', errorMsg)
+        console.error('[useAuth] Sign in error:', signInError)
         return false
       }
       return true
     } catch (err) {
+      console.error('[useAuth] Login error caught:', err)
       const errorMsg = err instanceof Error ? err.message : 'Network error. Please check your connection and try again.'
       setError(errorMsg)
-      console.error('[useAuth] Login error:', errorMsg)
+      console.error('[useAuth] Login error message:', errorMsg)
       return false
     }
   }
