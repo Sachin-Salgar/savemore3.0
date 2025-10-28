@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { supabase } from '@/lib/supabase'
+import { getSupabase } from '@/lib/supabase'
 
 export interface MemberInput {
   email: string
@@ -25,6 +25,8 @@ export function useAddMembers() {
     setError(null)
 
     try {
+      const supabase = getSupabase()
+
       // Generate a temporary password
       const tempPassword = Math.random().toString(36).substring(2, 15) +
                           Math.random().toString(36).substring(2, 15)

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
+import { getSupabase } from '@/lib/supabase'
 
 export interface AuthUser {
   id: string
@@ -18,9 +18,7 @@ export function useAuth() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        if (!supabase) {
-          throw new Error('Supabase not initialized. Please check your environment variables.')
-        }
+        const supabase = getSupabase()
         const { data: { session } } = await supabase.auth.getSession()
         if (session?.user) {
           setUser(session.user as AuthUser)
@@ -37,6 +35,7 @@ export function useAuth() {
     checkAuth()
 
     try {
+      const supabase = getSupabase()
       const { data: { subscription } } = supabase.auth.onAuthStateChange(
         (_event, session) => {
           if (session?.user) {
@@ -58,9 +57,8 @@ export function useAuth() {
   const login = async (email: string, password: string) => {
     setError(null)
     try {
-      if (!supabase) {
-        throw new Error('Supabase not initialized. Please check your environment variables.')
-      }
+      const supabase = getSupabase()
+      console.log('[useAuth] Attempting login with:', { email, supabaseUrl: import.meta.env.VITE_SUPABASE_URL })
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password
@@ -68,14 +66,15 @@ export function useAuth() {
       if (signInError) {
         const errorMsg = signInError.message || 'Login failed. Please try again.'
         setError(errorMsg)
-        console.error('[useAuth] Sign in error:', errorMsg)
+        console.error('[useAuth] Sign in error:', signInError)
         return false
       }
       return true
     } catch (err) {
+      console.error('[useAuth] Login error caught:', err)
       const errorMsg = err instanceof Error ? err.message : 'Network error. Please check your connection and try again.'
       setError(errorMsg)
-      console.error('[useAuth] Login error:', errorMsg)
+      console.error('[useAuth] Login error message:', errorMsg)
       return false
     }
   }
@@ -89,9 +88,7 @@ export function useAuth() {
   ) => {
     setError(null)
     try {
-      if (!supabase) {
-        throw new Error('Supabase not initialized. Please check your environment variables.')
-      }
+      const supabase = getSupabase()
       const { error: signUpError } = await supabase.auth.signUp({
         email,
         password,
@@ -121,9 +118,7 @@ export function useAuth() {
   const logout = async () => {
     setError(null)
     try {
-      if (!supabase) {
-        throw new Error('Supabase not initialized.')
-      }
+      const supabase = getSupabase()
       const { error: signOutError } = await supabase.auth.signOut()
       if (signOutError) {
         const errorMsg = signOutError.message || 'Logout failed.'
@@ -144,9 +139,7 @@ export function useAuth() {
   const resetPassword = async (email: string) => {
     setError(null)
     try {
-      if (!supabase) {
-        throw new Error('Supabase not initialized. Please check your environment variables.')
-      }
+      const supabase = getSupabase()
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(email)
       if (resetError) {
         const errorMsg = resetError.message || 'Password reset failed.'
