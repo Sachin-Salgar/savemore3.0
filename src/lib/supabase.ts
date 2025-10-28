@@ -20,9 +20,11 @@ const initializeSupabase = (): SupabaseClient => {
   const supabaseUrl = cleanEnvVar(rawUrl)
   const supabaseAnonKey = cleanEnvVar(rawKey)
 
+  console.log('[Supabase] Initializing...')
   console.log('[Supabase] Raw URL:', rawUrl)
   console.log('[Supabase] Cleaned URL:', supabaseUrl)
   console.log('[Supabase] URL valid:', supabaseUrl.startsWith('http'))
+  console.log('[Supabase] Key length:', supabaseAnonKey?.length || 0)
   console.log('[Supabase] Key present:', !!supabaseAnonKey)
 
   if (!supabaseUrl) {
