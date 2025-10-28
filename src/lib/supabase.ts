@@ -6,7 +6,7 @@ const cleanEnvVar = (value: any): string => {
   if (!value) return ''
   let cleaned = String(value)
   cleaned = cleaned.trim()
-  cleaned = cleaned.replace(/^["'`]|["'`]$/g, '')
+  cleaned = cleaned.replace(/^[=\s"'`]+|["'`\s]+$/g, '')
   cleaned = cleaned.trim()
   return cleaned
 }
